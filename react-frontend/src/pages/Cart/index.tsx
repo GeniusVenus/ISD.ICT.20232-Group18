@@ -42,12 +42,18 @@ const Cart = () => {
   // Delete Item
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
+    setSelectedItem(null);
+  };
+  const handleOpenDeleteModal = (item) => {
+    console.log("Open", item);
+    setSelectedItem(item);
+    setShowDeleteModal(true);
   };
   const handleDecreaseItem = (itemId: number) => {
     console.log("Decrease,", itemId);
     const num = cartItems.find((item) => item.id === itemId)?.quantity;
     if (num <= 1) {
-      setShowDeleteModal(true);
+      handleOpenDeleteModal(cartItems.find((item) => item.id === itemId));
     }
   };
   const handleDeleteItem = () => {
@@ -74,7 +80,10 @@ const Cart = () => {
 
   const handleConfirmUpdate = (selectedItem, newQuantity) => {
     const { id, availableQuantity } = selectedItem;
-    if (newQuantity <= availableQuantity) {
+    if (newQuantity === 0) {
+      handleCloseUpdateModal();
+      handleOpenDeleteModal(selectedItem);
+    } else if (newQuantity <= availableQuantity) {
       handleUpdateItem(id, newQuantity);
       handleCloseUpdateModal();
     } else {
