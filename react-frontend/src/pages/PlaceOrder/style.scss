@@ -1,0 +1,24 @@
+@use "../../styles/global.scss" as util;
+
+.place-order-page {
+  &.container {
+    padding: 20px 0;
+    .place-order-form {
+      width: 100%;
+      @include util.center;
+      flex-direction: column;
+      gap: 20px;
+      .form-input {
+        width: 100%;
+      }
+    }
+  }
+}
+.invoice-form {
+  @include util.center;
+  flex-direction: column;
+  gap: 8px;
+  .form-input {
+    width: 100%;
+  }
+}

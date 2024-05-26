@@ -1,0 +1,21 @@
+@use "../../styles/global.scss" as util;
+
+.profile-page {
+  &.container {
+    padding-top: 20px;
+    min-height: calc(100vh - 49px - 58.75px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    .profile-form {
+      width: 100%;
+      @include util.center;
+      flex-direction: column;
+      gap: 20px;
+      .form-input {
+        width: 100%;
+      }
+    }
+  }
+}
