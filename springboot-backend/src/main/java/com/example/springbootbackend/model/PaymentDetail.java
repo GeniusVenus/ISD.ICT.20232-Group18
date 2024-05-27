@@ -23,15 +23,15 @@ public class PaymentDetail {
     @Column(name = "amount", nullable = false, precision = 10)
     private BigDecimal amount;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
     @Column(name = "provider", nullable = false)
     private String provider;
 
     @ColumnDefault("'pending'")
     @Column(name = "status")
     private String status;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
