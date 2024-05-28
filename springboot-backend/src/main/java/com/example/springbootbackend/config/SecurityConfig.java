@@ -43,6 +43,7 @@ public class SecurityConfig {
 
     private final JwtAuthFilter authFilter;
 
+    @Autowired
     public SecurityConfig(JwtAuthFilter authFilter) {
         this.authFilter = authFilter;
     }

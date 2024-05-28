@@ -16,14 +16,21 @@ public class Product {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "name", nullable = false)
+    private String name;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "name", nullable = false)
-    private String name;
+    @Column(name = "SKU", nullable = false, length = 8)
+    private String sku;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
+    @Column(name = "weight", nullable = false, precision = 10)
+    private BigDecimal weight;
 
     @Column(name = "price", nullable = false, precision = 10)
     private BigDecimal price;
@@ -31,14 +38,10 @@ public class Product {
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
 
-    @Column(name = "sku", nullable = false, length = 8)
-    private String sku;
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
 
 }

@@ -42,7 +42,6 @@ public class User {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-
     @PrePersist
     public void prePersist() {
         Instant now = Instant.now();

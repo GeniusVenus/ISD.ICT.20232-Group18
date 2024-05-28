@@ -15,14 +15,15 @@ public class ShippingAddress {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Column(name = "address", nullable = false)
     private String address;
 
     @Column(name = "city", nullable = false)
     private String city;
-
-    @Column(name = "created_at")
-    private Instant createdAt;
 
     @Column(name = "phone_number", nullable = false)
     private String phoneNumber;
@@ -30,11 +31,10 @@ public class ShippingAddress {
     @Column(name = "postal_code")
     private String postalCode;
 
+    @Column(name = "created_at")
+    private Instant createdAt;
+
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 
 }

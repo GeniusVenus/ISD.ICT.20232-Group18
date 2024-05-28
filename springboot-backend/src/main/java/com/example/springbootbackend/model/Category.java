@@ -18,11 +18,11 @@ public class Category {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
     @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;

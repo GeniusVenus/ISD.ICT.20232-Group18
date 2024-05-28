@@ -16,21 +16,21 @@ public class OrderDetail {
     @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "total", nullable = false, precision = 10)
     private BigDecimal total;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "payment_id", nullable = false)
     private PaymentDetail payment;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 
 }
