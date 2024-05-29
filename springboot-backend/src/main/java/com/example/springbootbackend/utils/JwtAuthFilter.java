@@ -57,7 +57,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         }
 
         if (token != null) {
-            username = jwtService.extractUsername(token);
+            try {
+                username = jwtService.extractUsername(token);
+                logger.info("Username extracted from JWT: {}", username);
+            } catch (Exception e) {
+                logger.error("Error extracting username from JWT", e);
+            }
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -69,5 +74,11 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             }
         }
         filterChain.doFilter(request, response);
+    }
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getServletPath();
+        return path.equals("/api/register");
     }
 }

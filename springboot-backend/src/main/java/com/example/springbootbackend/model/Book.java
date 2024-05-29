@@ -15,35 +15,35 @@ public class Book {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
     @Column(name = "author", nullable = false)
     private String author;
 
     @Column(name = "cover_type", nullable = false)
     private String coverType;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name = "genre")
-    private String genre;
-
-    @Column(name = "language")
-    private String language;
-
-    @Column(name = "number_of_page")
-    private Integer numberOfPage;
+    @Column(name = "publisher", nullable = false)
+    private String publisher;
 
     @Column(name = "publication_date", nullable = false)
     private Instant publicationDate;
 
-    @Column(name = "publisher", nullable = false)
-    private String publisher;
+    @Column(name = "number_of_page")
+    private Integer numberOfPage;
+
+    @Column(name = "language")
+    private String language;
+
+    @Column(name = "genre")
+    private String genre;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
 
 }

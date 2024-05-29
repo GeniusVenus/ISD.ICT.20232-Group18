@@ -15,32 +15,32 @@ public class Cd {
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
     @Column(name = "albums", nullable = false)
     private String albums;
 
     @Column(name = "artist", nullable = false)
     private String artist;
 
-    @Column(name = "created_at")
-    private Instant createdAt;
-
-    @Column(name = "genre")
-    private String genre;
-
     @Column(name = "record_label", nullable = false)
     private String recordLabel;
-
-    @Column(name = "release_date")
-    private Instant releaseDate;
 
     @Column(name = "track_list", nullable = false)
     private String trackList;
 
+    @Column(name = "genre")
+    private String genre;
+
+    @Column(name = "release_date")
+    private Instant releaseDate;
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
     @Column(name = "updated_at")
     private Instant updatedAt;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
 
 }
