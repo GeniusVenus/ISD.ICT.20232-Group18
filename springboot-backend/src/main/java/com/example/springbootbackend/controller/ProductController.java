@@ -1,11 +1,16 @@
 package com.example.springbootbackend.controller;
 
+import com.example.springbootbackend.model.Book;
+import com.example.springbootbackend.model.Cd;
+import com.example.springbootbackend.model.Dvd;
 import com.example.springbootbackend.model.Product;
 import com.example.springbootbackend.repository.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -32,14 +37,81 @@ public class ProductController {
     }
 
     @GetMapping("/product/{productId}")
-    public ResponseEntity<Product> getProductById(@PathVariable("productId") int productId){
-        Optional<Product> product = productRepository.findById(productId);
-        if(product.isPresent()){
-            return ResponseEntity.ok(product.get());
-        }
-        else {
+    public ResponseEntity<Map<String, Object>> getProductById(@PathVariable("productId") int productId) {
+        Optional<Product> optionalProduct = productRepository.findById(productId);
+        if (optionalProduct.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        Product product = optionalProduct.get();
+        if (product.getCategory().getName().equals("Cd")) {
+            Optional<Cd> optionalCd = cdRepository.findById(productId);
+            if (optionalCd.isPresent()) {
+                Cd cd = optionalCd.get();
+                Map<String, Object> response = new HashMap<>();
+                response.put("id", cd.getId());
+                response.put("description", product.getDescription());
+                response.put("sku", product.getSku());
+                response.put("price", product.getPrice());
+                response.put("category", "Cd");
+                response.put("albums", cd.getAlbums());
+                response.put("artist", cd.getArtist());
+                response.put("recordLabel", cd.getRecordLabel());
+                response.put("trackList", cd.getTrackList());
+                response.put("genre", cd.getGenre());
+                response.put("releaseDate", cd.getReleaseDate());
+                response.put("createdAt", cd.getCreatedAt());
+                response.put("updatedAt", cd.getUpdatedAt());
+                return ResponseEntity.ok(response);
+            }
+        }
+        else if (product.getCategory().getName().equals("Dvd")) {
+            Optional<Dvd> optionalDvd = dvdRepository.findById(productId);
+            if (optionalDvd.isPresent()) {
+                Dvd dvd = optionalDvd.get();
+                Map<String, Object> response = new HashMap<>();
+                response.put("id", dvd.getId());
+                response.put("description", product.getDescription());
+                response.put("sku", product.getSku());
+                response.put("price", product.getPrice());
+                response.put("category", "Dvd");
+                response.put("disc_type", dvd.getDiscType());
+                response.put("director", dvd.getDirector());
+                response.put("runtime", dvd.getRuntime());
+                response.put("studio", dvd.getStudio());
+                response.put("language", dvd.getLanguage());
+                response.put("release_date", dvd.getReleaseDate());
+                response.put("genre", dvd.getGenre());
+                response.put("created_at", dvd.getCreatedAt());
+                response.put("updated_at", dvd.getUpdatedAt());
+                return ResponseEntity.ok(response);
+            }
+        }
+        else if (product.getCategory().getName().equals("Book")) {
+            Optional<Book> optionalBook = bookRepository.findById(productId);
+            if (optionalBook.isPresent()) {
+                Book book = optionalBook.get();
+                Map<String, Object> response = new HashMap<>();
+                response.put("id", book.getId());
+                response.put("description", product.getDescription());
+                response.put("sku", product.getSku());
+                response.put("price", product.getPrice());
+                response.put("category", "Dvd");
+                response.put("author", book.getAuthor());
+                response.put("genre",book.getGenre());
+                response.put("language",book.getLanguage());
+                response.put("cover_type",book.getCoverType());
+                response.put("number_of_page",book.getNumberOfPage());
+                response.put("publisher",book.getPublisher());
+                response.put("publication_date", book.getPublicationDate());
+                response.put("created_at", book.getCreatedAt());
+                response.put("update_at", book.getUpdatedAt());
+
+                return ResponseEntity.ok(response);
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
 }
