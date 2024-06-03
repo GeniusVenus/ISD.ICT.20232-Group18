@@ -14,50 +14,26 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "payment_details", schema = "itss")
+@Table(name = "payment_details")
 public class PaymentDetail {
-    private Integer id;
-
-    private BigDecimal amount;
-
-    private String provider;
-
-    private String status;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+    private Integer id;
 
     @Column(name = "amount", nullable = false, precision = 10)
-    public BigDecimal getAmount() {
-        return amount;
-    }
+    private BigDecimal amount;
 
     @Column(name = "provider", nullable = false)
-    public String getProvider() {
-        return provider;
-    }
+    private String provider;
 
     @ColumnDefault("'pending'")
     @Column(name = "status")
-    public String getStatus() {
-        return status;
-    }
+    private String status;
 
     @Column(name = "created_at")
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    private Instant updatedAt;
 
 }
