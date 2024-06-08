@@ -9,27 +9,52 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "order_items")
+@Table(name = "order_items", schema = "itss")
 public class OrderItem {
+    private Integer id;
+
+    private OrderDetail order;
+
+    private Product product;
+
+    private Integer quantity;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    public Integer getId() {
+        return id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
-    private OrderDetail order;
+    public OrderDetail getOrder() {
+        return order;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    public Product getProduct() {
+        return product;
+    }
 
     @Column(name = "quantity", nullable = false)
-    private Integer quantity;
+    public Integer getQuantity() {
+        return quantity;
+    }
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
 
 }
