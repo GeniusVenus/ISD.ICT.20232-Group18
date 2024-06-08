@@ -27,40 +27,7 @@ public class OrderController {
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
-
-    @GetMapping("/test")
-    public ResponseEntity<List<Map<String, Object>>> getAllOrderDetails() {
-        List<OrderDetail> orderDetails = orderService.getAllOrderDetails();
-        List<Map<String, Object>> response = orderDetails.stream()
-                .map(orderDetail -> {
-                    Map<String, Object> orderMap = new HashMap<>();
-                    orderMap.put("id", orderDetail.getId());
-                    orderMap.put("user_id", orderDetail.getUser().getId());
-                    orderMap.put("total", orderDetail.getTotal());
-                    return orderMap;
-                })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(response);
-    }
-
-//    @GetMapping("/{order_id}")
-//    public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
-//        OrderDetail orderDetail = orderService.getOrderDetail(order_id);
-//        List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
-//
-//
-//        if (orderDetail != null) {
-//            Map<String, Object> response = new HashMap<>();
-//            response.put("id", orderDetail.getId());
-//            response.put("user_id", orderDetail.getUser().getId());
-//            response.put("total", orderDetail.getTotal());
-//            response.put("payment_id", orderDetail.getPayment());
-//
-//            return ResponseEntity.ok(response);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    
     @GetMapping("/{order_id}")
     public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
         OrderDetail orderDetail = orderService.getOrderDetail(order_id);
