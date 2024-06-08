@@ -73,7 +73,7 @@ public class OrderController {
                     Map<String, Object> orderItemMap = new HashMap<>();
                     orderItemMap.put("id", item.getId());
                     orderItemMap.put("order_id", item.getOrder().getId());
-                    orderItemMap.put("product_id", item.getProduct().getId());
+                    orderItemMap.put("product", item.getProduct());
                     orderItemMap.put("quantity", item.getQuantity());
                     matchingOrderItems.add(orderItemMap);
                 }
