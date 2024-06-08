@@ -57,4 +57,5 @@ public class OrderDetail {
         return updatedAt;
     }
 
+
 }

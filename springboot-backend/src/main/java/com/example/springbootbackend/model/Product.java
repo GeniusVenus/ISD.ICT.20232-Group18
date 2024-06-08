@@ -1,6 +1,7 @@
-package com.example.springbootbackend.model;
+package com.example.sprigbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -78,5 +79,6 @@ public class Product {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
 
 }

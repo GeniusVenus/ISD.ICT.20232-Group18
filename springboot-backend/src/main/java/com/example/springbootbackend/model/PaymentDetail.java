@@ -60,4 +60,5 @@ public class PaymentDetail {
         return updatedAt;
     }
 
+
 }

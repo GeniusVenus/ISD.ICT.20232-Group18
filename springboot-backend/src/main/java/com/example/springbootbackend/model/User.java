@@ -2,26 +2,84 @@ package com.example.springbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.Instant;
+
+@Getter
+@Setter
 @Entity
 @Table(name="users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column(name="username")
-    private String name;
-    @Column(name="password")
+    @Column(name = "id", nullable = false)
+    private Integer id;
+
+    @Column(name = "username", nullable = false)
+    private String username;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @ColumnDefault("'USER'")
+    @Column(name = "role")
+    private String role;
+
+    @Column(name = "email", nullable = false, unique = true)
+    private String email;
+
+    @Column(name = "password", nullable = false)
     private String password;
-    public int getId() {return this.id;}
-    public void setId(int id) { this.id = id; }
-    public String getName() { return this.name; }
-    public void setName(String name) { this.name = name; }
-    public String getPassword(){return this.password;}
-    public void setPassword(String password){ this.password = password; }
+
+    @Column(name = "created_at")
+    private Instant createdAt;
+
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @PrePersist
+    public void prePersist() {
+        Instant now = Instant.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.updatedAt = Instant.now();
+    }
+
     public User() {}
 
-    public User(String name, String password) {
-        this.name = name;
+    public User(String email, String password, String username) {
+        this(email, password, username, "USER");
+    }
+
+    public User(String username, String firstName, String lastName, String email, String password) {
+        this(username, firstName, lastName, "USER", email, password);
+    }
+
+    public User(String email, String password, String username, String role) {
+        this.email = email;
         this.password = password;
-    }}
+        this.username = username;
+        this.role = role;
+    }
+
+    public User(String username, String firstName, String lastName, String role, String email, String password) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.role = role;
+        this.email = email;
+        this.password = password;
+    }
+}
