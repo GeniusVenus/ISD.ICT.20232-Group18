@@ -1,4 +1,4 @@
-package com.example.sprigbootbackend.model;
+package com.example.springbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
