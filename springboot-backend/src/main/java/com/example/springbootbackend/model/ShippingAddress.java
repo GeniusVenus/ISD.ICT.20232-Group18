@@ -9,32 +9,65 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "shipping_address")
+@Table(name = "shipping_address", schema = "itss")
 public class ShippingAddress {
+    private Integer id;
+
+    private User user;
+
+    private String address;
+
+    private String city;
+
+    private String phoneNumber;
+
+    private String postalCode;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    public Integer getId() {
+        return id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public User getUser() {
+        return user;
+    }
 
     @Column(name = "address", nullable = false)
-    private String address;
+    public String getAddress() {
+        return address;
+    }
 
     @Column(name = "city", nullable = false)
-    private String city;
+    public String getCity() {
+        return city;
+    }
 
     @Column(name = "phone_number", nullable = false)
-    private String phoneNumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
     @Column(name = "postal_code")
-    private String postalCode;
+    public String getPostalCode() {
+        return postalCode;
+    }
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
 
 }

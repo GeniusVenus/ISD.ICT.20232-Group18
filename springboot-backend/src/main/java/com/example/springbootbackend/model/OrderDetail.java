@@ -10,27 +10,52 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "order_details")
+@Table(name = "order_details", schema = "itss")
 public class OrderDetail {
+    private Integer id;
+
+    private User user;
+
+    private BigDecimal total;
+
+    private PaymentDetail payment;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    public Integer getId() {
+        return id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public User getUser() {
+        return user;
+    }
 
     @Column(name = "total", nullable = false, precision = 10)
-    private BigDecimal total;
+    public BigDecimal getTotal() {
+        return total;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "payment_id", nullable = false)
-    private PaymentDetail payment;
+    public PaymentDetail getPayment() {
+        return payment;
+    }
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
 
 }
