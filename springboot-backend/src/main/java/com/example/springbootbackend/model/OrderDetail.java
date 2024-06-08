@@ -35,4 +35,7 @@ public class OrderDetail {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
+
+
+
 }

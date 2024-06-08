@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,22 +43,56 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<?> getOrderDetail(@PathVariable("orderId") int orderId) {
-        OrderDetail orderDetail = orderService.getOrderDetail(orderId);
+//    @GetMapping("/{order_id}")
+//    public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
+//        OrderDetail orderDetail = orderService.getOrderDetail(order_id);
+//        List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
+//
+//
+//        if (orderDetail != null) {
+//            Map<String, Object> response = new HashMap<>();
+//            response.put("id", orderDetail.getId());
+//            response.put("user_id", orderDetail.getUser().getId());
+//            response.put("total", orderDetail.getTotal());
+//            response.put("payment_id", orderDetail.getPayment());
+//
+//            return ResponseEntity.ok(response);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+    @GetMapping("/{order_id}")
+    public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
+        OrderDetail orderDetail = orderService.getOrderDetail(order_id);
+        List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
 
         if (orderDetail != null) {
+            List<Map<String, Object>> matchingOrderItems = new ArrayList<>();
+            for (OrderItem item : orderItems) {
+                if (item.getOrder().getId() == order_id) {
+                    Map<String, Object> orderItemMap = new HashMap<>();
+                    orderItemMap.put("id", item.getId());
+                    orderItemMap.put("order_id", item.getOrder().getId());
+                    orderItemMap.put("product_id", item.getProduct().getId());
+                    orderItemMap.put("quantity", item.getQuantity());
+                    matchingOrderItems.add(orderItemMap);
+                }
+            }
+
             Map<String, Object> response = new HashMap<>();
             response.put("id", orderDetail.getId());
             response.put("user_id", orderDetail.getUser().getId());
             response.put("total", orderDetail.getTotal());
-            response.put("payment_id", orderDetail.getPayment().getId());
+            response.put("payment_id", orderDetail.getPayment());
+            response.put("order_items", matchingOrderItems);
 
             return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
     }
+
+
 
 
     @GetMapping("")
@@ -71,24 +102,16 @@ public class OrderController {
                 .map(orderItem -> {
                     Map<String, Object> orderMap = new HashMap<>();
                     orderMap.put("id", orderItem.getId());
-                    orderMap.put("order_id", orderItem.getOrder().getId());
-                    orderMap.put("product_id", orderItem.getProduct());
+                    orderMap.put("order_id", orderItem.getId());
+                    orderMap.put("product_id", orderItem.getProduct().getId());
                     orderMap.put("quantity", orderItem.getQuantity());
-
-                    // Extract user_id and add to the response
-                    Map<String, Object> orderDetails = new HashMap<>();
-                    orderDetails.put("user_id", orderItem.getOrder().getUser().getId());
-                    orderDetails.put("total", orderItem.getOrder().getTotal());
-                    orderDetails.put("payment", orderItem.getOrder().getPayment());
-                    orderDetails.put("id", orderItem.getOrder().getId());
-                    orderMap.put("order_details", orderDetails);
-
                     return orderMap;
                 })
                 .collect(Collectors.toList());
         System.out.println(response);
         return ResponseEntity.ok(response);
     }
+
 
 
 }
