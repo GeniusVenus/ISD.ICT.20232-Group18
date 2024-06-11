@@ -2,6 +2,7 @@ package com.example.springbootbackend.controller;
 
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.OrderDetail;
+import com.example.springbootbackend.model.PaymentDetail;
 import com.example.springbootbackend.repository.*;
 
 import com.example.springbootbackend.service.OrderService;
@@ -23,17 +24,21 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    private int payment_id;
+
     @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
-    
+
     @GetMapping("/{order_id}")
     public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
         OrderDetail orderDetail = orderService.getOrderDetail(order_id);
         List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
+        PaymentDetail paymentDetail = orderService.getPaymentDetail(order_id);
 
         if (orderDetail != null) {
+            payment_id = orderDetail.getPayment().getId();
             List<Map<String, Object>> matchingOrderItems = new ArrayList<>();
             for (OrderItem item : orderItems) {
                 if (item.getOrder().getId() == order_id) {
@@ -50,8 +55,16 @@ public class OrderController {
             response.put("id", orderDetail.getId());
             response.put("user_id", orderDetail.getUser().getId());
             response.put("total", orderDetail.getTotal());
-            response.put("payment_id", orderDetail.getPayment());
+//            response.put("payment_id", orderDetail.getPayment());
             response.put("order_items", matchingOrderItems);
+
+            response.put("createdAt",orderDetail.getCreatedAt());
+            response.put("updateAt",orderDetail.getUpdatedAt());
+
+            response.put("payment_id",paymentDetail.getId());
+            response.put("status",paymentDetail.getStatus());
+            response.put("amount",paymentDetail.getAmount());
+            response.put("provider",paymentDetail.getProvider());
 
             return ResponseEntity.ok(response);
         } else {
@@ -62,7 +75,7 @@ public class OrderController {
 
 
 
-    @GetMapping("")
+    @GetMapping("/{user_id}")
     public ResponseEntity<List<Map<String, Object>>> getOrderItemsByCurrentUser() {
         List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
         List<Map<String, Object>> response = orderItems.stream()
