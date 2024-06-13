@@ -48,11 +48,6 @@ public class PaymentDetail {
         return provider;
     }
 
-    @ColumnDefault("'pending'")
-    @Column(name = "status")
 
-    @Column(name = "created_at")
-
-    @Column(name = "updated_at")
 
 }
