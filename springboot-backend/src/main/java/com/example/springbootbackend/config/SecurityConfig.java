@@ -65,9 +65,6 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/login",
                                 "/api/register",
-                                "/api/add/**",
-                                "/api/delete/product/**",
-                                "/api/update/product/**",
                                 "/api/view/**"
                         ).permitAll()
 
@@ -80,8 +77,18 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/admin/**"
+                                "/api/admin/**",
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
                         ).hasRole("ADMIN")
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
+                        ).hasRole("PRODUCT MANAGER")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
