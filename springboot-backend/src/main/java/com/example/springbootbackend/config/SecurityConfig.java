@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -64,9 +65,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/login",
                                 "/api/register",
-                                "api/product",
-                                "/api/products/**"
+                                "/api/add/**",
+                                "/api/delete/product/**",
+                                "/api/update/product/**",
+                                "/api/view/**"
                         ).permitAll()
+
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(

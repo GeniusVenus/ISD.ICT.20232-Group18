@@ -27,6 +27,8 @@ public class Product {
 
     private BigDecimal price;
 
+    private BigDecimal weight;
+
     private Integer quantity;
 
     private Instant createdAt;
@@ -35,6 +37,8 @@ public class Product {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+
     public Integer getId() {
         return id;
     }
@@ -80,5 +84,6 @@ public class Product {
         return updatedAt;
     }
 
-
+    @Column(name = "weight")
+    public BigDecimal getWeight(){ return weight;}
 }
