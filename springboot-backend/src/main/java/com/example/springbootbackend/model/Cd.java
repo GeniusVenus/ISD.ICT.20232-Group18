@@ -33,6 +33,8 @@ public class Cd {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+
     public Integer getId() {
         return id;
     }
