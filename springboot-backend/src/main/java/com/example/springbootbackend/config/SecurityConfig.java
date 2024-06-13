@@ -66,12 +66,16 @@ public class SecurityConfig {
                                 "/api/register",
                                 "api/product",
                                 "/api/products/**"
+                                "/api/payment/"
                         ).permitAll()
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/users/**",
                                 "/api/logout"
+                                "/api/logout",
+                                "/api/cart/**",
+                                "/api/payment"
                         ).authenticated()
                 )
                 .authorizeHttpRequests(auth -> auth

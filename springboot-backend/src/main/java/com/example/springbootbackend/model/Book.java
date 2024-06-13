@@ -9,11 +9,11 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "book", schema = "itss")
+@Table(name = "book")
 public class Book {
+    @Id
+    @Column(name = "id", nullable = false)
     private Integer id;
-
-    private Product product;
 
     private String author;
 
@@ -42,6 +42,7 @@ public class Book {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
     public Product getProduct() {
         return product;
     }
@@ -50,13 +51,16 @@ public class Book {
     public String getAuthor() {
         return author;
     }
+    private String author;
 
     @Column(name = "cover_type", nullable = false)
+    private String coverType;
     public String getCoverType() {
         return coverType;
     }
 
     @Column(name = "publisher", nullable = false)
+    private String publisher;
     public String getPublisher() {
         return publisher;
     }
@@ -65,31 +69,34 @@ public class Book {
     public Instant getPublicationDate() {
         return publicationDate;
     }
+    private Instant publicationDate;
 
     @Column(name = "number_of_page")
-    public Integer getNumberOfPage() {
-        return numberOfPage;
-    }
+    private Integer numberOfPage;
 
     @Column(name = "language")
     public String getLanguage() {
         return language;
     }
+    private String language;
 
     @Column(name = "genre")
     public String getGenre() {
         return genre;
     }
+    private String genre;
 
     @Column(name = "created_at")
     public Instant getCreatedAt() {
         return createdAt;
     }
+    private Instant createdAt;
 
     @Column(name = "updated_at")
     public Instant getUpdatedAt() {
         return updatedAt;
     }
 
+    private Instant updatedAt;
 
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JpaBuddyIdeaProjectConfig" reUseTableSchema="true">
+    <option name="reLastEntityCreationPackage" value="springboot-backend/src/main/java/com/example/springbootbackend/model" />
+    <option name="reverseEngineeringLastDbConnectionId" value="2dc750f7-610d-406f-8041-55a441e98483__itss" />
+  </component>
+  <component name="JpaPluginProjectSettings">
+    <option name="entityNameTemplate" />
+    <option name="generateJpaOnGetter" value="true" />
+    <option name="generateTypeOnEntity" value="true" />
+    <option name="scaffoldingLanguage" />
+  </component>
+</project>

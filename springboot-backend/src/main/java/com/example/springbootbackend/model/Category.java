@@ -12,35 +12,19 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "category", schema = "itss")
+@Table(name = "category")
 public class Category {
-    private Integer id;
-
-    private String name;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+    private Integer id;
 
     @Column(name = "name", nullable = false)
-    public String getName() {
-        return name;
-    }
+    private String name;
 
     @Column(name = "created_at")
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
+    private Instant updatedAt;
 
 }

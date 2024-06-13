@@ -9,79 +9,38 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "cd", schema = "itss")
+@Table(name = "cd")
 public class Cd {
-    private Integer id;
-
-    private Product product;
-
-    private String albums;
-
-    private String artist;
-
-    private String recordLabel;
-
-    private String trackList;
-
-    private String genre;
-
-    private Instant releaseDate;
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
     @Id
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    public Product getProduct() {
-        return product;
-    }
+    private Product product;
 
     @Column(name = "albums", nullable = false)
-    public String getAlbums() {
-        return albums;
-    }
+    private String albums;
 
     @Column(name = "artist", nullable = false)
-    public String getArtist() {
-        return artist;
-    }
+    private String artist;
 
     @Column(name = "record_label", nullable = false)
-    public String getRecordLabel() {
-        return recordLabel;
-    }
+    private String recordLabel;
 
     @Column(name = "track_list", nullable = false)
-    public String getTrackList() {
-        return trackList;
-    }
+    private String trackList;
 
     @Column(name = "genre")
-    public String getGenre() {
-        return genre;
-    }
+    private String genre;
 
     @Column(name = "release_date")
-    public Instant getReleaseDate() {
-        return releaseDate;
-    }
+    private Instant releaseDate;
 
     @Column(name = "created_at")
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
+    private Instant updatedAt;
 
 }
