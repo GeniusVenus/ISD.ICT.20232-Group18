@@ -1,41 +1,40 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 type authState = {
-  id: string;
-  user: string;
-  token: string;
+  isSignedIn: boolean;
 };
 const initialState: authState = {
-  id: "",
-  user: "",
-  token: "",
+  isSignedIn: false,
 };
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setToken: (state: { token: any }, action: PayloadAction<string>) => {
-      console.log("Add new token");
-      state.token = action.payload;
+    // setToken: (state: { token: any }, action: PayloadAction<string>) => {
+    //   console.log("Add new token");
+    //   state.token = action.payload;
+    // },
+    // setCredentials: (
+    //   state: { user: any; token: any; id: any },
+    //   action: PayloadAction<authState>
+    // ) => {
+    //   const { id, user, token } = action.payload;
+    //   state.user = user;
+    //   state.token = token;
+    //   state.id = id;
+    // },
+    logIn: (state) => {
+      state.isSignedIn = true;
     },
-    setCredentials: (
-      state: { user: any; token: any; id: any },
-      action: PayloadAction<authState>
-    ) => {
-      const { id, user, token } = action.payload;
-      state.user = user;
-      state.token = token;
-      state.id = id;
-    },
-    logOut: (state: { id: string; user: string; token: string }) => {
-      state.id = "";
-      state.user = "";
-      state.token = "";
+    logOut: (state) => {
+      state.isSignedIn = false;
     },
   },
 });
-export const { setToken, setCredentials, logOut } = authSlice.actions;
+export const { logIn, logOut } = authSlice.actions;
 export default authSlice.reducer;
-export const selectCurrentUserId = (state: RootState) => state.auth.id;
-export const selectCurrentUser = (state: RootState) => state.auth.user;
-export const selectCurrentToken = (state: RootState) => state.auth.token;
+export const selectCurrentIsSignedIn = (state: RootState) =>
+  state.auth.isSignedIn;
+// export const selectCurrentUserId = (state: RootState) => state.auth.id;
+// export const selectCurrentUser = (state: RootState) => state.auth.user;
+// export const selectCurrentToken = (state: RootState) => state.auth.token;

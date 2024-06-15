@@ -9,7 +9,7 @@ type Props = {
 const TableItems = ({ items }: Props) => {
   const navigate = useNavigate();
   return (
-    <Table striped bordered hover>
+    <Table striped bordered hover responsive>
       <thead>
         <tr>
           <th>

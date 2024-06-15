@@ -5,13 +5,17 @@ import { Button, Container, Form } from "react-bootstrap";
 import AIMS from "../../assets/icons/AIMS";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
+import useSignIn from "../../service/api/authentication/useSignIn";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  const { mutate: signIn } = useSignIn();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    signIn({
+      email: email,
+      password: password,
+    });
   };
   return (
     <>

@@ -3,6 +3,9 @@ import { Button, Container, Form } from "react-bootstrap";
 import "./style.scss";
 import { Helmet } from "react-helmet";
 import full_title from "../../utils/full_title";
+import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 const CreateProduct = () => {
   const [product, setProduct] = useState({
     name: "",
@@ -50,7 +53,11 @@ const CreateProduct = () => {
         <title>{full_title("Create Product")}</title>
       </Helmet>
       <Container className="create-product">
-        <Form className="create-form" onSubmit={() => {}}>
+        <Link to="/manage-product">
+          {" "}
+          <FontAwesomeIcon icon={faChevronLeft} /> Back to product list
+        </Link>
+        <Form className="create-form mt-3" onSubmit={() => {}}>
           <Form.Group controlId="formCategory">
             <Form.Label>Category</Form.Label>
             <Form.Control

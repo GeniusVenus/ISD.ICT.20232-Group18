@@ -4,15 +4,27 @@ import "./style.scss";
 import { useState } from "react";
 import { Container, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import AIMS from "../../assets/icons/AIMS";
+import useSignUp from "../../service/api/authentication/useSignUp";
 
 const Register = () => {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const { mutate: signUp } = useSignUp();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      toast.error("Confirm password doesn't match with password");
+      return;
+    }
+    signUp({
+      username: username,
+      email: email,
+      password: password,
+    });
   };
   return (
     <>
@@ -49,7 +61,7 @@ const Register = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </Form.Group>
-          <Form.Group controlId="formPassword" className="form-input">
+          <Form.Group controlId="formConfirmPassword" className="form-input">
             <Form.Label>Confirm password</Form.Label>
             <Form.Control
               type="password"

@@ -4,11 +4,16 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectCurrentUser } from "../../service/redux/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import AIMS from "../../assets/icons/AIMS";
+import {
+  logOut,
+  selectCurrentIsSignedIn,
+} from "../../service/redux/auth/authSlice";
+import useSignOut from "../../service/api/authentication/useSignOut";
 const NavBar = () => {
-  const user = useSelector(selectCurrentUser);
+  const isSignedIn = useSelector(selectCurrentIsSignedIn);
+  const dispatch = useDispatch();
   const authContent = (
     <>
       <Nav.Link as={Link} to="/auth/login">
@@ -19,6 +24,11 @@ const NavBar = () => {
       </Nav.Link>
     </>
   );
+  const { mutate: signOut } = useSignOut();
+  const handleLogOut = () => {
+    // dispatch(logOut());
+    signOut();
+  };
   const userContent = (
     <NavDropdown title="User" id="basic-nav-dropdown">
       <NavDropdown.Item as={Link} to="/user/profile">
@@ -31,7 +41,9 @@ const NavBar = () => {
         Manage
       </NavDropdown.Item>
       <NavDropdown.Divider />
-      <NavDropdown.Item href="#action/3.4">Log out</NavDropdown.Item>
+      <NavDropdown.Item onClick={() => handleLogOut()}>
+        Log out
+      </NavDropdown.Item>
     </NavDropdown>
   );
   return (
@@ -50,7 +62,7 @@ const NavBar = () => {
               <Nav.Link as={Link} to="/cart">
                 Cart
               </Nav.Link>
-              {user === "" ? authContent : userContent}
+              {!isSignedIn ? authContent : userContent}
             </Nav>
           </Navbar.Collapse>
         </Container>

@@ -2,7 +2,7 @@ import axios from "axios";
 import { setToken } from "../redux/auth/authSlice";
 import store from "../redux/store";
 import { toast } from "react-toastify";
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = "http://localhost:8080/api";
 const user = axios.create();
 
 user.defaults.baseURL = BASE_URL;
@@ -12,8 +12,6 @@ user.defaults.headers.common = {
   "Content-Type": "application/json",
 };
 user.defaults.timeout = 5000;
-
-user.defaults.withCredentials = true;
 
 const refreshToken = async () => {
   return "new_access_token";
