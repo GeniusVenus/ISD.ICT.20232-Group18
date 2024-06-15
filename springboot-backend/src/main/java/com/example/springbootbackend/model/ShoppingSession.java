@@ -1,5 +1,7 @@
 package com.example.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,24 +13,46 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "shopping_session")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "shopping_session", schema = "itss")
 public class ShoppingSession {
+    private Integer id;
+
+    private User user;
+
+    private BigDecimal total;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    public Integer getId() {
+        return id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    public User getUser() {
+        return user;
+    }
 
     @ColumnDefault("0")
     @Column(name = "total", nullable = false, precision = 10)
-    private BigDecimal total;
+    public BigDecimal getTotal() {
+        return total;
+    }
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
 
 }

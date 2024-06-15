@@ -14,7 +14,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "payment_details")
+@Table(name = "payment_details", schema = "itss")
 public class PaymentDetail {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,14 +26,28 @@ public class PaymentDetail {
     @Column(name = "provider", nullable = false)
     private String provider;
 
-    @ColumnDefault("'pending'")
-    @Column(name = "status")
     private String status;
 
-    @Column(name = "created_at")
     private Instant createdAt;
 
-    @Column(name = "updated_at")
     private Instant updatedAt;
+
+    @Id
+    @Column(name = "id", nullable = false)
+    public Integer getId() {
+        return id;
+    }
+
+    @Column(name = "amount", nullable = false, precision = 10)
+    public BigDecimal getAmount() {
+        return amount;
+    }
+
+    @Column(name = "provider", nullable = false)
+    public String getProvider() {
+        return provider;
+    }
+
+
 
 }
