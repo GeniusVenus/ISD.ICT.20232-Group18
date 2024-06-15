@@ -9,41 +9,88 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "dvd")
+@Table(name = "dvd", schema = "itss")
 public class Dvd {
+    private Integer id;
+
+    private Product product;
+
+    private String discType;
+
+    private String director;
+
+    private String runtime;
+
+    private String studio;
+
+    private String language;
+
+    private Instant releaseDate;
+
+    private String genre;
+
+    private Instant createdAt;
+
+    private Instant updatedAt;
+
     @Id
     @Column(name = "id", nullable = false)
-    private Integer id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+
+    public Integer getId() {
+        return id;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false)
-    private Product product;
+    public Product getProduct() {
+        return product;
+    }
 
     @Column(name = "disc_type", nullable = false)
-    private String discType;
+    public String getDiscType() {
+        return discType;
+    }
 
     @Column(name = "director", nullable = false)
-    private String director;
+    public String getDirector() {
+        return director;
+    }
 
     @Column(name = "runtime", nullable = false)
-    private String runtime;
+    public String getRuntime() {
+        return runtime;
+    }
 
     @Column(name = "studio", nullable = false)
-    private String studio;
+    public String getStudio() {
+        return studio;
+    }
 
     @Column(name = "language", nullable = false)
-    private String language;
+    public String getLanguage() {
+        return language;
+    }
 
     @Column(name = "release_date", nullable = false)
-    private Instant releaseDate;
+    public Instant getReleaseDate() {
+        return releaseDate;
+    }
 
     @Column(name = "genre")
-    private String genre;
+    public String getGenre() {
+        return genre;
+    }
 
     @Column(name = "created_at")
-    private Instant createdAt;
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
 
     @Column(name = "updated_at")
-    private Instant updatedAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
 
 }

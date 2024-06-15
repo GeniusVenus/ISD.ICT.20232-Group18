@@ -15,40 +15,30 @@ import java.time.Instant;
 @Table(name = "product", schema = "itss")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Product {
-    @Id
-    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "SKU", nullable = false, length = 8)
     private String sku;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
     private Category category;
 
-    @Column(name = "weight", nullable = false, precision = 10)
-    private BigDecimal weight;
-
-    @Column(name = "price", nullable = false, precision = 10)
     private BigDecimal price;
 
-    @Column(name = "quantity", nullable = false)
+    private BigDecimal weight;
+
     private Integer quantity;
 
-    @Column(name = "created_at")
     private Instant createdAt;
 
-    @Column(name = "updated_at")
     private Instant updatedAt;
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+
     public Integer getId() {
         return id;
     }
@@ -94,5 +84,6 @@ public class Product {
         return updatedAt;
     }
 
-
+    @Column(name = "weight")
+    public BigDecimal getWeight(){ return weight;}
 }
