@@ -27,6 +27,9 @@ const NavBar = () => {
       <NavDropdown.Item as={Link} to="/user/orders">
         Orders
       </NavDropdown.Item>
+      <NavDropdown.Item as={Link} to="/manage-product">
+        Manage
+      </NavDropdown.Item>
       <NavDropdown.Divider />
       <NavDropdown.Item href="#action/3.4">Log out</NavDropdown.Item>
     </NavDropdown>

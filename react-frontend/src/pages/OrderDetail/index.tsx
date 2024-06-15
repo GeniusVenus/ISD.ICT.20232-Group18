@@ -1,9 +1,9 @@
 import { Helmet } from "react-helmet";
 import "./style.scss";
 import full_title from "../../utils/full_title";
-import { Card, Container, Table } from "react-bootstrap";
-import centerDiv from "../../styles/centerDiv";
+import { Container } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import TableItems from "../../components/TableItems";
 
 const OrderDetail = () => {
   const navigate = useNavigate();
@@ -32,65 +32,7 @@ const OrderDetail = () => {
         <h1>Order Detail </h1>
         <h5>Order ID: {order.id}</h5>
         <h5>Customer: {order.customer}</h5>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th>
-                <div style={centerDiv}> Item ID</div>{" "}
-              </th>
-              <th>
-                <div style={centerDiv}> Image</div>
-              </th>
-              <th>
-                <div style={centerDiv}> Item Name</div>
-              </th>
-              <th>
-                <div style={centerDiv}> Price</div>
-              </th>
-              <th>
-                <div style={centerDiv}> Quantity</div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {order.items.map((item) => (
-              <tr key={item.id} onClick={() => navigate(`/product/${item.id}`)}>
-                <td>
-                  <div style={centerDiv}>{item.id}</div>
-                </td>
-                <td>
-                  <div style={centerDiv}>
-                    {" "}
-                    <Card.Img
-                      width={40}
-                      style={{
-                        width: "100px",
-                        height: "auto",
-                        cursor: "pointer",
-                      }}
-                      src={
-                        item.category === "CD"
-                          ? "/cd.jpg"
-                          : item.category === "Book"
-                          ? "/book.jpg"
-                          : "/dvd.jpg"
-                      }
-                      onClick={() => navigate(`/product/${item.id}`)}
-                    />
-                  </div>
-                </td>
-                <td>{item.name}</td>
-                <td>
-                  <div style={centerDiv}> ${item.price.toFixed(2)}</div>
-                </td>
-                <td>
-                  {" "}
-                  <div style={centerDiv}> {item.quantity} </div>{" "}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+        <TableItems items={order.items} />
         <h5>Subtotal: ${subTotal}</h5>
         <h5>Shipping fee: ${shippingFee}</h5>
         <h4 style={{ color: "red" }}>

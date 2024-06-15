@@ -2,12 +2,11 @@ import { Helmet } from "react-helmet";
 import full_title from "../../utils/full_title";
 import "./style.scss";
 import { useState } from "react";
-import { Container, Table, Card, Button, Form, Modal } from "react-bootstrap";
-import { useNavigate } from "react-router";
+import { Container, Button, Form, Modal } from "react-bootstrap";
 import centerDiv from "../../styles/centerDiv";
+import TableItems from "../../components/TableItems";
 
 const PlaceOrder = () => {
-  const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([
     {
       id: 1,
@@ -70,87 +69,6 @@ const PlaceOrder = () => {
       </h4>
     </div>
   );
-  const TableItems = (
-    <Table striped bordered>
-      <thead>
-        <tr>
-          <th>
-            {" "}
-            <div style={centerDiv}>#</div>
-          </th>
-          <th>
-            <div style={centerDiv}>Image</div>
-          </th>
-          <th>
-            <div style={centerDiv}>Name</div>
-          </th>
-          <th>
-            <div style={centerDiv}>Price</div>
-          </th>
-          <th>
-            <div style={centerDiv}>Quantity</div>
-          </th>
-          <th>
-            <div style={centerDiv}>Total</div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        {cartItems.map((item, index) => (
-          <tr key={item.id}>
-            <td>
-              {" "}
-              <div style={centerDiv}>{index + 1}</div>
-            </td>
-            <td>
-              <div style={centerDiv}>
-                {" "}
-                <Card.Img
-                  width={40}
-                  style={{
-                    width: "100px",
-                    height: "auto",
-                    cursor: "pointer",
-                  }}
-                  src={
-                    item.category === "CD"
-                      ? "/cd.jpg"
-                      : item.category === "Book"
-                      ? "/book.jpg"
-                      : "/dvd.jpg"
-                  }
-                  onClick={() => navigate(`/product/${item.id}`)}
-                />
-              </div>
-            </td>
-            <td>{item.name}</td>
-            <td>
-              <div style={centerDiv}>${item.price.toFixed(2)}</div>
-            </td>
-            <td>
-              <div style={centerDiv}>
-                <span
-                  style={{
-                    marginLeft: "12px",
-                    marginRight: "12px",
-                    cursor: "pointer",
-                  }}
-                >
-                  {item.quantity}
-                </span>
-              </div>
-            </td>
-            <td>
-              {" "}
-              <div style={centerDiv}>
-                ${(item.price * item.quantity).toFixed(2)}
-              </div>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
-  );
   const InvoiceModal = (
     <Modal
       size="xl"
@@ -200,7 +118,7 @@ const PlaceOrder = () => {
             />
           </Form.Group>
         </Form>
-        {TableItems}
+        <TableItems items={cartItems} />
         {costDisplay}
       </Modal.Body>
       <Modal.Footer>
@@ -221,7 +139,7 @@ const PlaceOrder = () => {
       </Helmet>
       <Container className="place-order-page">
         <h1 style={{ marginBottom: "20px" }}>Place Order</h1>
-        {TableItems}
+        <TableItems items={cartItems} />
         {costDisplay}
         <Form onSubmit={handleSubmit} className="place-order-form">
           <Form.Group controlId="formCustomerName" className="form-input">

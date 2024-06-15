@@ -87,11 +87,11 @@ const ProductDetail = () => {
         <title>{full_title("Product")}</title>
       </Helmet>
       <Container className="product-detail-page">
-        <h1 style={{ marginBottom: "20px" }}>Product Detail </h1>
         <Row>
           <Col md={4}>
             <Card>
               <Card.Img
+                style={{ height: "300px", objectFit: "cover" }}
                 src={
                   product.category === "CD"
                     ? "/cd.jpg"
