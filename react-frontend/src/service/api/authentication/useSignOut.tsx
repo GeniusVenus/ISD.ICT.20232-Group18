@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { logOut } from "../../redux/auth/authSlice";
 import client from "../clientAPI";
 const doSignOut = async () => {
-  return await client.post("logout");
+  return await client.post("logout", {});
 };
 const useSignOut = () => {
   const navigate = useNavigate();

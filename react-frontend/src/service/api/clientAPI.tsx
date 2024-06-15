@@ -10,4 +10,6 @@ client.defaults.headers.common = {
 };
 client.defaults.timeout = 5000;
 
+client.defaults.withCredentials = true;
+
 export default client;
