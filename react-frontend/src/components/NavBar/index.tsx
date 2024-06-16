@@ -4,16 +4,12 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import AIMS from "../../assets/icons/AIMS";
-import {
-  logOut,
-  selectCurrentIsSignedIn,
-} from "../../service/redux/auth/authSlice";
+import { selectCurrentIsSignedIn } from "../../service/redux/auth/authSlice";
 import useSignOut from "../../service/api/authentication/useSignOut";
 const NavBar = () => {
   const isSignedIn = useSelector(selectCurrentIsSignedIn);
-  const dispatch = useDispatch();
   const authContent = (
     <>
       <Nav.Link as={Link} to="/auth/login">
@@ -26,7 +22,6 @@ const NavBar = () => {
   );
   const { mutate: signOut } = useSignOut();
   const handleLogOut = () => {
-    // dispatch(logOut());
     signOut();
   };
   const userContent = (

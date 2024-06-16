@@ -60,3 +60,9 @@ textarea {
   resize: none;
   outline: none !important;
 }
+
+.loading-section {
+  margin-top: 20px;
+  width: 100%;
+  @include center();
+}

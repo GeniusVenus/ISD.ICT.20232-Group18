@@ -6,16 +6,15 @@ import full_title from "../../utils/full_title";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import useCreateProduct from "../../service/api/product/useCreateProduct";
 const CreateProduct = () => {
   const [product, setProduct] = useState({
     name: "",
     description: "",
     sku: "",
-    price: "",
+    price: 0,
     categoryName: "",
-    quantity: "",
-    createdAt: "",
-    updatedAt: "",
+    quantity: 0,
     language: "",
     genre: "",
     // DVD field
@@ -25,7 +24,7 @@ const CreateProduct = () => {
     runtime: "",
     // Book fields
     coverType: "",
-    numberOfPage: "",
+    numberOfPage: 0,
     publicationDate: "",
     publisher: "",
     author: "",
@@ -36,7 +35,7 @@ const CreateProduct = () => {
     artist: "",
     releaseDate: "",
   });
-
+  const { mutate: createProduct } = useCreateProduct();
   const [category, setCategory] = useState("");
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,7 +45,11 @@ const CreateProduct = () => {
     setCategory(e.target.value);
     setProduct({ ...product, categoryName: e.target.value });
   };
-
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(product);
+    createProduct(product);
+  };
   return (
     <>
       <Helmet>
@@ -57,7 +60,7 @@ const CreateProduct = () => {
           {" "}
           <FontAwesomeIcon icon={faChevronLeft} /> Back to product list
         </Link>
-        <Form className="create-form mt-3" onSubmit={() => {}}>
+        <Form className="create-form mt-3" onSubmit={(e) => handleSubmit(e)}>
           <Form.Group controlId="formCategory">
             <Form.Label>Category</Form.Label>
             <Form.Control
@@ -278,6 +281,16 @@ const CreateProduct = () => {
                   required
                 />
               </Form.Group>
+              <Form.Group controlId="formGenre">
+                <Form.Label>Genre</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="genre"
+                  value={product.genre}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
               <Form.Group controlId="formStudio">
                 <Form.Label>Studio</Form.Label>
                 <Form.Control
@@ -314,6 +327,16 @@ const CreateProduct = () => {
                   type="text"
                   name="runtime"
                   value={product.runtime}
+                  onChange={handleChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group controlId="formReleaseDate">
+                <Form.Label>Release Date</Form.Label>
+                <Form.Control
+                  type="date"
+                  name="releaseDate"
+                  value={product.releaseDate}
                   onChange={handleChange}
                   required
                 />
