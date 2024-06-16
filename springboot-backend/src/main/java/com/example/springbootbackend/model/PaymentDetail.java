@@ -48,6 +48,21 @@ public class PaymentDetail {
         return provider;
     }
 
+    @ColumnDefault("'pending'")
+    @Column(name = "status")
+    public String getStatus() {
+        return status;
+    }
+
+    @Column(name = "created_at")
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    @Column(name = "updated_at")
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
 
 
 }

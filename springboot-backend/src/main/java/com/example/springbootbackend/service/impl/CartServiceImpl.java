@@ -102,6 +102,7 @@ public class CartServiceImpl implements CartService {
             return new Error("Can not delete product from cart");
         }
     }
+
     @Override
     public Object bill(Integer session_id){
         try {
