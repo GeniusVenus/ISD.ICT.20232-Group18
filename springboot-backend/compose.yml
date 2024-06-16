@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 20102003
+      MYSQL_DATABASE: itss
+      MYSQL_USER: itss
+      MYSQL_PASSWORD: 123456
+    volumes:
+      - mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+volumes:
+  mysql:
