@@ -81,14 +81,14 @@ public class SecurityConfig {
                                 "/api/add/product",
                                 "/api/delete/product/**",
                                 "/api/update/product/**"
-                        ).hasRole("ADMIN")
+                        ).hasAuthority("ADMIN")
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/add/product",
                                 "/api/delete/product/**",
                                 "/api/update/product/**"
-                        ).hasRole("PRODUCT MANAGER")
+                        ).hasAuthority("PRODUCT MANAGER")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

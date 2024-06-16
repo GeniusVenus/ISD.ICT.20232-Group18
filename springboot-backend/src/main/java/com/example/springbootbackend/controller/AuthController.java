@@ -140,6 +140,7 @@ public class AuthController {
         clearJwtTokenCookie(response);
 
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(existingUser.getUsername(), request.getPassword()));
+        log.info(authentication.getAuthorities().toString());
         if (authentication.isAuthenticated()) {
             String jwtToken = jwtService.generateToken(existingUser.getUsername());
             setJwtTokenCookie(jwtToken, response);
