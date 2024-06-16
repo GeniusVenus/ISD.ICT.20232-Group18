@@ -10,6 +10,7 @@ import com.example.springbootbackend.service.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,8 +50,11 @@ public class CartServiceImpl implements CartService {
             if (product < quantity) {
                 return new Error("Product's quantity is not enough");
             }
-
-            boolean check = cartRepository.findAll().stream().allMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
+            System.out.println(productid);
+            System.out.println(quantity);
+            System.out.println(session_id);
+            boolean check = cartRepository.findAll().stream().anyMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
+            System.out.println(check);
             if (check==false) {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setProduct(productRepository.findById(productid).get());
@@ -61,6 +65,7 @@ public class CartServiceImpl implements CartService {
                 newCartItem.setCreatedAt(Instant.now());
                 newCartItem.setUpdatedAt(Instant.now());
                 cartRepository.save(newCartItem);
+                System.out.println(newCartItem);
                 return newCartItem;
             } else {
             CartItem cartItem = cartRepository.findAll().stream().filter(cartItem1 -> cartItem1.getProduct().getId().equals(productid)).collect(Collectors.toList()).get(0);
