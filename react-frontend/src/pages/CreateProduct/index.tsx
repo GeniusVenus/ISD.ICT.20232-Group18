@@ -7,6 +7,7 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import useCreateProduct from "../../service/api/product/useCreateProduct";
+import transformDateToISOString from "../../utils/transformDateToISOString";
 const CreateProduct = () => {
   const [product, setProduct] = useState({
     name: "",
@@ -17,6 +18,7 @@ const CreateProduct = () => {
     quantity: 0,
     language: "",
     genre: "",
+    weight: 0,
     // DVD field
     studio: "",
     director: "",
@@ -47,8 +49,13 @@ const CreateProduct = () => {
   };
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(product);
-    createProduct(product);
+    const values = {
+      ...product,
+      releaseDate: transformDateToISOString(product.releaseDate),
+      publicationDate: transformDateToISOString(product.publicationDate),
+    };
+    console.log(values);
+    createProduct(values);
   };
   return (
     <>
@@ -127,7 +134,16 @@ const CreateProduct = () => {
               required
             />
           </Form.Group>
-
+          <Form.Group controlId="formWeight">
+            <Form.Label>Weight</Form.Label>
+            <Form.Control
+              type="number"
+              name="weight"
+              value={product.weight}
+              onChange={handleChange}
+              required
+            />
+          </Form.Group>
           {/* Conditionally render fields based on selected category */}
           {category === "CD" && (
             <>
@@ -344,7 +360,7 @@ const CreateProduct = () => {
             </>
           )}
 
-          <Button variant="primary" type="submit">
+          <Button variant="primary" type="submit" style={{ maxWidth: "200px" }}>
             Add new product
           </Button>
         </Form>

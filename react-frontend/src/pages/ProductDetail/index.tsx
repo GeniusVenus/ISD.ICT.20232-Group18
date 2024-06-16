@@ -3,49 +3,12 @@ import full_title from "../../utils/full_title";
 import "./style.scss";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { toast } from "react-toastify";
-// const product = {
-//   id: 1,
-//   name: "Harry Porter",
-//   description: "Product description goes here.",
-//   category: "Book",
-//   author: "Me",
-//   cover_type: "WTF",
-//   publisher: "me",
-//   publication_date: "2024-06-11",
-//   number_of_page: 200,
-//   language: "English",
-//   genre: "Legend",
-//   price: 49.99,
-// };
-const product = {
-  id: 1,
-  name: "Real G",
-  description: "Product description goes here.",
-  category: "CD",
-  price: 49.99,
-  albums: "Legend never dies",
-  artist: "WOW",
-  record_label: "What",
-  track_list: "None",
-  release_date: "2024-06-11",
-  genre: "Legend",
-};
-// const product = {
-//   id: 1,
-//   name: "Wewewewewew",
-//   description: "Product description goes here.",
-//   category: "DVD",
-//   disc_type: "Music",
-//   director: "Who the hell",
-//   runtime: "5 min",
-//   language: "Chinese",
-//   genre: "Legend",
-//   studio: "We woo",
-//   release_date: "2024-06-11",
-//   price: 49.99,
-// };
-
+import { useParams } from "react-router";
+import useProductDetail from "../../service/api/product/useProductDetail";
+import LoadingSpinner from "../../components/LoadingSpinner";
 const ProductDetail = () => {
+  const { product_id } = useParams();
+  const { data: product, isLoading, isError } = useProductDetail(product_id);
   const handleAddItem = () => {
     toast.success(`Add ${product.name} to cart successfully`);
   };
@@ -87,42 +50,52 @@ const ProductDetail = () => {
         <title>{full_title("Product")}</title>
       </Helmet>
       <Container className="product-detail-page">
-        <Row>
-          <Col md={4}>
-            <Card>
-              <Card.Img
-                style={{ height: "300px", objectFit: "cover" }}
-                src={
-                  product.category === "CD"
-                    ? "/cd.jpg"
-                    : product.category === "Book"
-                    ? "/book.jpg"
-                    : "/dvd.jpg"
-                }
-              />
-            </Card>
-          </Col>
-          <Col md={8}>
-            <Card>
-              <Card.Body>
-                <Card.Title style={{ marginBottom: "20px" }}>
-                  {product.name}
-                </Card.Title>
-                <Card.Text>Description: {product.description}</Card.Text>
-                <Card.Text>Category: {product.category}</Card.Text>
-                {product.category === "CD"
-                  ? CDInfo
-                  : product.category === "Book"
-                  ? BookInfo
-                  : DVDInfo}
-                <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
-                <Button variant="primary" onClick={handleAddItem}>
-                  Add to Cart
-                </Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+        {isError ? (
+          "Something wrong happened"
+        ) : isLoading ? (
+          <div className="loading-section">
+            <LoadingSpinner />{" "}
+          </div>
+        ) : (
+          <Row>
+            <Col md={4}>
+              <Card>
+                <Card.Img
+                  style={{ height: "300px", objectFit: "cover" }}
+                  src={
+                    product.category.toLowerCase() === "cd"
+                      ? "/cd.jpg"
+                      : product.category.toLowerCase() === "book"
+                      ? "/book.jpg"
+                      : "/dvd.jpg"
+                  }
+                />
+              </Card>
+            </Col>
+            <Col md={8}>
+              <Card>
+                <Card.Body>
+                  <Card.Title style={{ marginBottom: "20px" }}>
+                    {product.name}
+                  </Card.Title>
+                  <Card.Text>Description: {product.description}</Card.Text>
+                  <Card.Text>
+                    Category: {product.category.toLowerCase()}
+                  </Card.Text>
+                  {product.category.toLowerCase() === "cd"
+                    ? CDInfo
+                    : product.category.toLowerCase() === "book"
+                    ? BookInfo
+                    : DVDInfo}
+                  <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
+                  <Button variant="primary" onClick={handleAddItem}>
+                    Add to Cart
+                  </Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        )}
       </Container>
     </>
   );

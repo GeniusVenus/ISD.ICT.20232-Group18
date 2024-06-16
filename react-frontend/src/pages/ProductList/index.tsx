@@ -19,6 +19,7 @@ import full_title from "../../utils/full_title";
 import "./style.scss";
 import useAllProducts from "../../service/api/product/useAllProducts";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import useDeleteProduct from "../../service/api/product/useDeleteProduct";
 
 const categories = ["All", "Book", "DVD", "CD"];
 // const products = [
@@ -37,7 +38,9 @@ const ProductList = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [productToDelete, setProductToDelete] = useState<string | null>(null);
   const { data: products, isLoading, isError } = useAllProducts();
+  const { mutate: deleteProduct } = useDeleteProduct();
   const itemsPerPage = 12;
+  console.log(products);
   const filteredProducts = (products ? products : []).filter(
     (product: any) =>
       (filterCategory === "All" || product.category === filterCategory) &&
@@ -72,6 +75,7 @@ const ProductList = () => {
   const handleDeleteConfirm = () => {
     // Add your delete logic here
     console.log("Product deleted:", productToDelete);
+    deleteProduct(productToDelete);
     setProductToDelete(null);
     setShowDeleteModal(false);
   };
@@ -108,7 +112,7 @@ const ProductList = () => {
                     <Dropdown.Item
                       key={category}
                       active={filterCategory === category}
-                      onClick={() => setFilterCategory(category)}
+                      onClick={() => handleCategoryChange(category)}
                     >
                       {category}
                     </Dropdown.Item>
@@ -125,7 +129,9 @@ const ProductList = () => {
         >
           Create new product
         </Button>
-        {isLoading ? (
+        {isError ? (
+          "Something wrong happend"
+        ) : isLoading ? (
           <div className="loading-section">
             {" "}
             <LoadingSpinner />{" "}
@@ -159,9 +165,9 @@ const ProductList = () => {
                           objectFit: "cover",
                         }}
                         src={
-                          product.category === "CD"
+                          product.category.name === "cd"
                             ? "/cd.jpg"
-                            : product.category === "Book"
+                            : product.category.name === "book"
                             ? "/book.jpg"
                             : "/dvd.jpg"
                         }
@@ -173,7 +179,9 @@ const ProductList = () => {
                       ${product.price.toFixed(2)}
                     </td>
                     <td style={{ textAlign: "center" }}>{product.quantity}</td>
-                    <td style={{ textAlign: "center" }}>{product.category}</td>
+                    <td style={{ textAlign: "center" }}>
+                      {product.category.name}
+                    </td>
                     <td style={{ textAlign: "center" }}>
                       <FontAwesomeIcon
                         icon={faEdit}

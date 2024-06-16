@@ -34,11 +34,11 @@ const Home = () => {
   const { data: products, isLoading, isError } = useAllProducts();
   const itemsPerPage = 12; // Number of items per page
   const offset = currentPage * itemsPerPage;
-
+  console.log(products);
   const filteredProducts = (products ? products : []).filter(
     (product: any) =>
-      product.category.includes(
-        filterCategory === "All" ? "" : filterCategory
+      product.category.name.includes(
+        filterCategory === "All" ? "" : filterCategory.toLowerCase()
       ) && product.name.toLowerCase().includes(search.toLowerCase())
   );
 
@@ -112,9 +112,9 @@ const Home = () => {
                   <Card className="mb-4 card-item">
                     <Card.Img
                       src={
-                        product.category === "CD"
+                        product.category.name === "cd"
                           ? "/cd.jpg"
-                          : product.category === "Book"
+                          : product.category.name === "book"
                           ? "/book.jpg"
                           : "/dvd.jpg"
                       }
@@ -126,7 +126,7 @@ const Home = () => {
                         {product.name}
                       </Card.Title>
                       <Card.Text className="text-muted mb-1">
-                        Category: {product.category}
+                        Category: {product.category.name}
                       </Card.Text>
                       <Card.Text className="text-muted mb-1">
                         Price: ${product.price}
