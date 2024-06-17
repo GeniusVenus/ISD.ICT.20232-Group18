@@ -9,8 +9,9 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name = "shipping_address", schema = "itss")
 public class ShippingAddress {
+    @Id
+    @Column(name = "id", nullable = false)
     private Integer id;
 
     private User user;

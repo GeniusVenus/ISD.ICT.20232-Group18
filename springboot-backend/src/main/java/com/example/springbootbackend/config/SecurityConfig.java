@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -65,9 +66,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/login",
                                 "/api/register",
-                                "api/product",
-                                "/api/products/**"
+                                "/api/payment/",
+                                "/api/view/**"
                         ).permitAll()
+
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
@@ -77,14 +79,28 @@ public class SecurityConfig {
                                 "/api/orders/?",
                                 "/api/orders/test",
                                 "/api/orders/user/?",
-                                "/api/orders/**"
+                                "/api/orders/**",
+                                "/api/cart/**",
+                                "/api/payment",
+                                "/api/cart/bill",
+                                "/api/logout"
 
                         ).authenticated()
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/admin/**"
+                                "/api/admin/**",
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
                         ).hasRole("ADMIN")
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
+                        ).hasRole("PRODUCT MANAGER")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

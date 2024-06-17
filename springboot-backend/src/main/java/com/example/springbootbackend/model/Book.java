@@ -40,7 +40,7 @@ public class Book {
         return id;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id", nullable = false)
     public Product getProduct() {
         return product;
