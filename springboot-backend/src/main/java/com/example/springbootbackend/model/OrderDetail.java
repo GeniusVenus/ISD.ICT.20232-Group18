@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "order_details", schema = "itss")
 public class OrderDetail {
@@ -30,20 +29,17 @@ public class OrderDetail {
     @Column(name = "total", nullable = false, precision = 10)
     private BigDecimal total;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "payment_id", referencedColumnName = "id", nullable = false)
+    private PaymentDetail payment;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> orderItems;
-
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "payment_id", nullable = false)
-    private PaymentDetail payment;
-
 
     @Column(name = "created_at")
     private Instant createdAt;
 
     @Column(name = "updated_at")
     private Instant updatedAt;
-
 }
-

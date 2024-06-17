@@ -1,43 +1,60 @@
 import { Helmet } from "react-helmet";
 import full_title from "../../utils/full_title";
 import "./style.scss";
-import { useState } from "react";
-import { Container, Button, Form, Modal } from "react-bootstrap";
+import { useMemo, useState } from "react";
+import { Container, Button, Form, Modal, Card, Table } from "react-bootstrap";
 import centerDiv from "../../styles/centerDiv";
-import TableItems from "../../components/TableItems";
+import useCart from "../../service/api/cart/useCart";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import usePlaceOrder from "../../service/api/order/usePlaceOrder";
+import { useSelector } from "react-redux";
+import { selectCurrentUserId } from "../../service/redux/auth/authSlice";
 
 const PlaceOrder = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      category: "Book",
-      name: "Book 1",
-      price: 10.99,
-      quantity: 1,
-      availableQuantity: 5,
-    },
-    {
-      id: 2,
-      category: "DVD",
-      name: "DVD 1",
-      price: 14.99,
-      quantity: 2,
-      availableQuantity: 10,
-    },
-    {
-      id: 3,
-      category: "CD",
-      name: "CD 1",
-      price: 9.99,
-      quantity: 1,
-      availableQuantity: 8,
-    },
-  ]);
   const [customerName, setCustomerName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [showInvoiceModal, setShowInvoiceModal] = useState(false);
+  const { data: cartItems, isLoading, isError } = useCart();
+  const { mutate: placeOrder } = usePlaceOrder();
+  const user_id = useSelector(selectCurrentUserId);
+  const subTotal = useMemo(
+    () =>
+      (cartItems ? cartItems : []).reduce(
+        (total: any, item: any) => total + item.product.price * item.quantity,
+        0
+      ),
+    [cartItems, isLoading]
+  );
+  console.log(cartItems);
+  const shippingFee = 5;
+  const totalPrice = useMemo(() => (subTotal + shippingFee) * 1.1, [subTotal]);
+  const handlePlaceOrder = () => {
+    let items: any[] = [];
+    cartItems.forEach((item: any) => {
+      items.push({
+        product: {
+          id: item?.product?.id,
+        },
+        quantity: item?.quantity,
+      });
+    });
+    const values = {
+      user: {
+        id: user_id,
+      },
+      total: totalPrice,
+      payment: {
+        amount: totalPrice,
+        provider: "VISA",
+        status: "pending",
+      },
+      orderItems: items,
+    };
+    console.log(values);
+    placeOrder(values);
+  };
   const handleCloseInvoice = () => {
     setShowInvoiceModal(false);
   };
@@ -45,14 +62,9 @@ const PlaceOrder = () => {
     setShowInvoiceModal(true);
   };
   const handleConfirmOrder = () => {
+    handlePlaceOrder();
     handleCloseInvoice();
   };
-  const subTotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
-  const shippingFee = 5;
-  const totalPrice = (subTotal + shippingFee) * 1.1;
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleOpenInvoice();
@@ -65,9 +77,83 @@ const PlaceOrder = () => {
       <h5>Subtotal: ${subTotal}</h5>
       <h5>Shipping fee: ${shippingFee}</h5>
       <h4 style={{ color: "red" }}>
-        Total Price: ${totalPrice.toFixed(2)} {`VAT(10%)`}
+        Total Price: ${totalPrice} {`VAT(10%)`}
       </h4>
     </div>
+  );
+  const table = isError ? (
+    "Something wrong happened"
+  ) : isLoading ? (
+    <div className="loading-section">
+      <LoadingSpinner />
+    </div>
+  ) : (
+    <Table striped bordered hover responsive>
+      <thead>
+        <tr>
+          <th>
+            <div style={centerDiv}>#</div>
+          </th>
+          <th>
+            <div style={centerDiv}>Image</div>
+          </th>
+          <th>
+            <div style={centerDiv}>Name</div>
+          </th>
+          <th>
+            <div style={centerDiv}>Price</div>
+          </th>
+          <th>
+            <div style={centerDiv}>Quantity</div>
+          </th>
+          <th>
+            <div style={centerDiv}>Total</div>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        {(cartItems ? cartItems : []).map((item: any) => (
+          <tr key={item.id}>
+            <td>
+              <div style={centerDiv}>{item?.id}</div>
+            </td>
+            <td>
+              <div style={centerDiv}>
+                <Card.Img
+                  width={40}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                  }}
+                  src={
+                    item.product.category.name === "cd"
+                      ? "/cd.jpg"
+                      : item.product.category.name === "book"
+                      ? "/book.jpg"
+                      : "/dvd.jpg"
+                  }
+                />
+              </div>
+            </td>
+            <td>{item.product.name}</td>
+            <td>
+              <div style={centerDiv}>${item.product.price.toFixed(2)}</div>
+            </td>
+            <td>
+              <div style={centerDiv}>
+                <span>{item.quantity}</span>
+              </div>
+            </td>
+            <td>
+              <div style={centerDiv}>
+                ${(item.product.price * item.quantity).toFixed(2)}
+              </div>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
   );
   const InvoiceModal = (
     <Modal
@@ -118,7 +204,7 @@ const PlaceOrder = () => {
             />
           </Form.Group>
         </Form>
-        <TableItems items={cartItems} />
+        {table}
         {costDisplay}
       </Modal.Body>
       <Modal.Footer>
@@ -139,7 +225,7 @@ const PlaceOrder = () => {
       </Helmet>
       <Container className="place-order-page">
         <h1 style={{ marginBottom: "20px" }}>Place Order</h1>
-        <TableItems items={cartItems} />
+        {table}
         {costDisplay}
         <Form onSubmit={handleSubmit} className="place-order-form">
           <Form.Group controlId="formCustomerName" className="form-input">

@@ -1,37 +1,61 @@
 import { Helmet } from "react-helmet";
 import full_title from "../../utils/full_title";
 import "./style.scss";
-import { Container, Table } from "react-bootstrap";
+import { Container, Table, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import ReactPaginate from "react-paginate";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import useOrders from "../../service/api/order/useOrders";
+import centerDiv from "../../styles/centerDiv";
+import LoadingSpinner from "../../components/LoadingSpinner";
+import transformISOToDateString from "../../utils/transformISOToDateString";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCheckCircle,
+  faHourglassHalf,
+  faCreditCard,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import usePayment from "../../service/api/order/usePayment";
+import useDeleteOrder from "../../service/api/order/useDeleteOrder";
 
 const Orders = () => {
   const navigate = useNavigate();
-  const orders = [
-    { id: 1, date: "2024-05-01", total: 49.99 },
-    { id: 2, date: "2024-05-03", total: 74.5 },
-    { id: 3, date: "2024-05-05", total: 102.25 },
-    { id: 4, date: "2024-05-07", total: 89.99 },
-    { id: 5, date: "2024-05-09", total: 56.75 },
-    { id: 6, date: "2024-05-11", total: 99.99 },
-    { id: 7, date: "2024-05-13", total: 110.5 },
-    { id: 8, date: "2024-05-15", total: 67.89 },
-    { id: 9, date: "2024-05-17", total: 45.0 },
-    { id: 10, date: "2024-05-19", total: 58.25 },
-    { id: 11, date: "2024-05-21", total: 75.0 },
-  ];
-
+  const { data: orders, isLoading, isError } = useOrders();
+  const { mutate: Pay } = usePayment();
+  const { mutate: DeleteOrder } = useDeleteOrder();
   const [currentPage, setCurrentPage] = useState(0);
-  const ordersPerPage = 5;
+  const [showModal, setShowModal] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
+
+  const ordersPerPage = 10;
 
   const handlePageClick = (data: any) => {
     setCurrentPage(data.selected);
   };
 
   const offset = currentPage * ordersPerPage;
-  const currentOrders = orders.slice(offset, offset + ordersPerPage);
-  const pageCount = Math.ceil(orders.length / ordersPerPage);
+  const currentOrders = orders?.slice(offset, offset + ordersPerPage);
+  const pageCount = useMemo(
+    () => Math.ceil(orders?.length / ordersPerPage),
+    [isLoading, orders]
+  );
+
+  const handlePay = (orderInfo: string, amount: string) => {
+    Pay({ orderInfo, amount });
+  };
+
+  const handleDeleteOrder = (order_id: string | null) => {
+    setOrderToDelete(order_id);
+    setShowModal(true);
+  };
+
+  const confirmDeleteOrder = () => {
+    DeleteOrder(orderToDelete);
+    setShowModal(false);
+  };
+
+  const handleClose = () => setShowModal(false);
 
   return (
     <>
@@ -39,28 +63,92 @@ const Orders = () => {
         <title>{full_title("Orders")}</title>
       </Helmet>
       <Container className="orders-page">
-        <h1>Orders History</h1>
+        <h2>Orders History</h2>
         <br />
-        {orders.length > 0 ? (
+        {isError ? (
+          "Something wrong happened"
+        ) : isLoading ? (
+          <div className="loading-section">
+            <LoadingSpinner />
+          </div>
+        ) : (
           <>
             <Table striped bordered hover>
               <thead>
                 <tr>
-                  <th>Order ID</th>
-                  <th>Date</th>
-                  <th>Total</th>
+                  <th>
+                    <div style={centerDiv}>Order ID</div>
+                  </th>
+                  <th>
+                    <div style={centerDiv}>Date</div>
+                  </th>
+                  <th>
+                    <div style={centerDiv}>Total</div>
+                  </th>
+                  <th>
+                    <div style={centerDiv}>Status</div>
+                  </th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
-                {currentOrders.map((order) => (
-                  <tr
-                    key={order.id}
-                    style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/user/orders/${order.id}`)}
-                  >
-                    <td>{order.id}</td>
-                    <td>{order.date}</td>
-                    <td>${order.total.toFixed(2)}</td>
+                {currentOrders.map((order: any) => (
+                  <tr key={order.id}>
+                    <td>
+                      <div
+                        style={{ ...centerDiv, cursor: "pointer" }}
+                        onClick={() => navigate(`/user/orders/${order?.id}`)}
+                      >
+                        {order?.id}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={centerDiv}>
+                        {transformISOToDateString(order?.createAt)}
+                      </div>
+                    </td>
+                    <td>
+                      <div style={centerDiv}>${order?.total.toFixed(2)}</div>
+                    </td>
+                    <td>
+                      <div style={{ ...centerDiv, marginTop: "3px" }}>
+                        {order?.payment?.status === "paid" ? (
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            style={{ color: "green" }}
+                          />
+                        ) : (
+                          <FontAwesomeIcon
+                            icon={faHourglassHalf}
+                            style={{ color: "orange" }}
+                          />
+                        )}
+                      </div>
+                    </td>
+                    <td>
+                      {order?.payment?.status && (
+                        <div
+                          style={{
+                            ...centerDiv,
+                            marginTop: "3px",
+                            gap: "12px",
+                          }}
+                        >
+                          <FontAwesomeIcon
+                            icon={faCreditCard}
+                            style={{ cursor: "pointer", color: "blue" }}
+                            onClick={() =>
+                              handlePay(order?.id, order?.total * 25000)
+                            }
+                          />
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            style={{ color: "red", cursor: "pointer" }}
+                            onClick={() => handleDeleteOrder(order?.id)}
+                          />
+                        </div>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -85,10 +173,25 @@ const Orders = () => {
               breakLinkClassName={"page-link"}
             />
           </>
-        ) : (
-          <p>No order history found</p>
         )}
       </Container>
+
+      <Modal show={showModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Deletion</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Are you sure you want to delete order {orderToDelete}?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmDeleteOrder}>
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 };

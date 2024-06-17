@@ -74,9 +74,6 @@ public class OrderController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getAllOrderDetailsByUserId(@PathVariable("user_id") int userId) {
         List<OrderDetail> orderDetails = orderService.getAllOrderDetailsByUserId(userId);
-        if (orderDetails.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
         List<Map<String, Object>> response = orderDetails.stream()
                 .map(orderDetail -> {
                     Map<String, Object> orderMap = new HashMap<>();
@@ -94,7 +91,7 @@ public class OrderController {
     }
 
 
-//    CRUD Order Detail
+    //    CRUD Order Detail
     @PostMapping
     public ResponseEntity<OrderDetailDTO> createOrderDetail(@RequestBody OrderDetail orderDetail) {
         OrderDetail createdOrderDetail = orderService.createOrderDetail(orderDetail);

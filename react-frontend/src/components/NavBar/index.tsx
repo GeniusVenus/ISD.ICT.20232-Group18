@@ -57,9 +57,11 @@ const NavBar = () => {
             <Nav.Link as={Link} to="/">
                 Home
               </Nav.Link>
+              {isSignedIn &&  
               <Nav.Link as={Link} to="/cart">
                 Cart
               </Nav.Link>
+              }
               {!isSignedIn ? authContent : userContent}
             </Nav>
           </Navbar.Collapse>

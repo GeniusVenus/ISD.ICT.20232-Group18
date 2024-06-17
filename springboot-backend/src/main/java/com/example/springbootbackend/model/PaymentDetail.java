@@ -1,10 +1,7 @@
 package com.example.springbootbackend.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -20,14 +17,10 @@ import java.time.Instant;
 @Table(name = "payment_details", schema = "itss")
 
 public class PaymentDetail {
-    @Id
-    @Column(name = "id", nullable = false)
     private Integer id;
 
-    @Column(name = "amount", nullable = false, precision = 10)
     private BigDecimal amount;
 
-    @Column(name = "provider", nullable = false)
     private String provider;
 
     private String status;
@@ -38,6 +31,7 @@ public class PaymentDetail {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getId() {
         return id;
     }
@@ -67,6 +61,4 @@ public class PaymentDetail {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
-
-
 }

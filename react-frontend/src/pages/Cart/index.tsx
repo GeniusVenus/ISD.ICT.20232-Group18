@@ -5,8 +5,8 @@ import centerDiv from "../../styles/centerDiv";
 import "./style.scss";
 import Helmet from "react-helmet";
 import { useNavigate } from "react-router";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faMinus } from "@fortawesome/free-solid-svg-icons";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useCart from "../../service/api/cart/useCart";
 import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
@@ -18,25 +18,25 @@ const Cart = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [newQuantity, setNewQuantity] = useState(0);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const {data: cartItems , isLoading, isError} = useCart();
-  const {mutate: addProductToCart} = useAddProductToCart(); 
-  const {mutate: deleteProductFromCart} = useDeleteProductFromCart(); 
-  const {mutate: updateCart} = useUpdateCart();
-  console.log(cartItems)
+  const { data: cartItems, isLoading, isError } = useCart();
+  const { mutate: addProductToCart } = useAddProductToCart();
+  const { mutate: deleteProductFromCart } = useDeleteProductFromCart();
+  const { mutate: updateCart } = useUpdateCart();
+  console.log(cartItems);
   const handleAddItem = (item: any) => {
-    addProductToCart(item?.product?.id)
+    addProductToCart(item?.product?.id);
   };
 
   const handleDecreaseItem = (item: any) => {
-    if(item?.quantity == 1){
+    if (item?.quantity == 1) {
       handleOpenDeleteModal(item);
-      return; 
+      return;
     }
     updateCart({
       product_id: item?.product?.id,
-      quantity: item?.quantity - 1
-    })
-  }
+      quantity: item?.quantity - 1,
+    });
+  };
 
   const handleCloseDeleteModal = () => {
     setShowDeleteModal(false);
@@ -49,15 +49,15 @@ const Cart = () => {
   };
 
   const handleConfirmDelete = () => {
-    deleteProductFromCart(selectedItem?.product?.id)
+    deleteProductFromCart(selectedItem?.product?.id);
     handleCloseDeleteModal();
   };
 
   const handleUpdateItem = (itemId: any, quantity: any) => {
     updateCart({
       product_id: itemId,
-      quantity: quantity ? quantity : 0
-    })
+      quantity: quantity ? quantity : 0,
+    });
   };
 
   const handleCloseUpdateModal = () => {
@@ -76,7 +76,7 @@ const Cart = () => {
     if (newQuantity === 0) {
       handleCloseUpdateModal();
       handleOpenDeleteModal(selectedItem);
-    } else if (newQuantity <= selectedItem?.product?.quantity + selectedItem?.quantity) {
+    } else if (newQuantity <= selectedItem?.product?.quantity) {
       handleUpdateItem(selectedItem?.product?.id, newQuantity);
       handleCloseUpdateModal();
     } else {
@@ -96,7 +96,7 @@ const Cart = () => {
             <Form.Control
               type="number"
               min="0"
-              max={selectedItem && (selectedItem?.product?.quantity + selectedItem?.quantity)}
+              max={selectedItem && selectedItem?.product?.quantity}
               value={newQuantity}
               onChange={(e) => setNewQuantity(parseInt(e.target.value, 10))}
             />
@@ -133,11 +133,14 @@ const Cart = () => {
     </Modal>
   );
 
-  const subTotal = useMemo(() => (cartItems ? cartItems : []).reduce(
-    (total: any, item: any) => total + item.product.price * item.quantity,
-    0
-  ),[cartItems, isLoading])
-  const totalPrice = useMemo(() => subTotal * 1.1,[subTotal]);
+  const subTotal = useMemo(
+    () =>
+      (cartItems ? cartItems : []).reduce(
+        (total: any, item: any) => total + item.product.price * item.quantity,
+        0
+      ),
+    [cartItems, isLoading]
+  );
 
   return (
     <>
@@ -146,12 +149,14 @@ const Cart = () => {
       </Helmet>
       <Container className="cart-page">
         <h1 style={{ marginBottom: "20px" }}>Cart</h1>
-        {isError ? "Something wrong happened" :
-          isLoading ? (
-            <div className="loading-section">
-              <LoadingSpinner />
-            </div>
-          ) : (
+        {isError ? (
+          "Something wrong happened"
+        ) : isLoading ? (
+          <div className="loading-section">
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <>
             <Table striped bordered hover responsive>
               <thead>
                 <tr>
@@ -176,7 +181,7 @@ const Cart = () => {
                 </tr>
               </thead>
               <tbody>
-                {(cartItems ? cartItems : []).map((item: any, index: any) => (
+                {(cartItems ? cartItems : []).map((item: any) => (
                   <tr key={item.id}>
                     <td>
                       <div style={centerDiv}>{item?.id}</div>
@@ -198,13 +203,17 @@ const Cart = () => {
                               ? "/book.jpg"
                               : "/dvd.jpg"
                           }
-                          onClick={() => navigate(`/product/${item.product.id}`)}
+                          onClick={() =>
+                            navigate(`/product/${item.product.id}`)
+                          }
                         />
                       </div>
                     </td>
                     <td>{item.product.name}</td>
                     <td>
-                      <div style={centerDiv}>${item.product.price.toFixed(2)}</div>
+                      <div style={centerDiv}>
+                        ${item.product.price.toFixed(2)}
+                      </div>
                     </td>
                     <td>
                       <div style={centerDiv}>
@@ -220,7 +229,7 @@ const Cart = () => {
                           style={{
                             marginLeft: "12px",
                             marginRight: "12px",
-                            cursor: "pointer"
+                            cursor: "pointer",
                           }}
                           onClick={() => handleOpenUpdateModal(item)}
                         >
@@ -245,21 +254,22 @@ const Cart = () => {
                 ))}
               </tbody>
             </Table>
-          )}
-        <div
-          className="text-right mt-3"
-          style={{ ...centerDiv, flexDirection: "column", gap: "8px" }}
-        >
-          <h5>Subtotal: ${subTotal.toFixed(2)}</h5>
-          <h4 style={{ color: "red" }}>
-            Total Price: ${totalPrice.toFixed(2)} {`VAT(10%)`}
-          </h4>
-          <Button variant="primary" onClick={() => navigate("/place-order")}>
-            Place Order
-          </Button>
-        </div>
-        {updateModal}
-        {deleteModal}
+            <div
+              className="text-right mt-3"
+              style={{ ...centerDiv, flexDirection: "column", gap: "8px" }}
+            >
+              <h4>Subtotal: ${subTotal.toFixed(2)}</h4>
+              <Button
+                variant="primary"
+                onClick={() => navigate("/place-order")}
+              >
+                Place Order
+              </Button>
+            </div>
+            {updateModal}
+            {deleteModal}
+          </>
+        )}
       </Container>
     </>
   );

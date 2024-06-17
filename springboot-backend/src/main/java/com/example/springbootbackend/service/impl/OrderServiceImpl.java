@@ -72,22 +72,28 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public OrderDetail createOrderDetail(OrderDetail orderDetail) {
-        orderDetail.setCreatedAt(Instant.now());
-        orderDetail.setUpdatedAt(Instant.now());
+        Instant now = Instant.now();
 
+        // Set timestamps for OrderDetail
+        orderDetail.setCreatedAt(now);
+        orderDetail.setUpdatedAt(now);
+
+        // Get and set timestamps for PaymentDetail
         PaymentDetail paymentDetail = orderDetail.getPayment();
-        paymentDetail.setCreatedAt(Instant.now());
-        paymentDetail.setUpdatedAt(Instant.now());
+        paymentDetail.setCreatedAt(now);
+        paymentDetail.setUpdatedAt(now);
+        paymentDetail = paymentDetailRepository.save(paymentDetail); // Save PaymentDetail first
         orderDetail.setPayment(paymentDetail);
 
         // Set the order for each OrderItem and set timestamps
         List<OrderItem> orderItems = orderDetail.getOrderItems();
         for (OrderItem item : orderItems) {
             item.setOrder(orderDetail);
-            item.setCreatedAt(Instant.now());
-            item.setUpdatedAt(Instant.now());
+            item.setCreatedAt(now);
+            item.setUpdatedAt(now);
         }
 
+        // Save OrderDetail (cascading will save OrderItems)
         return orderDetailRepository.save(orderDetail);
     }
 

@@ -22,10 +22,10 @@ const useSignIn = () => {
     onError: (error) => {
       toast.error(error?.response?.data);
     },
-    onSuccess: (response) => {
+    onSuccess: (data) => {
       console.log("success");
-      console.log(response);
-      dispatch(logIn());
+      console.log(data);
+      dispatch(logIn(data?.data));
       setTimeout(() => {
         toast.success("Login successfully");
       }, 200);

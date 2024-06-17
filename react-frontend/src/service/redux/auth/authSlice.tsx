@@ -1,10 +1,14 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 type authState = {
   isSignedIn: boolean;
+  user_id: string | null;
+  session_id: string | null;
 };
 const initialState: authState = {
   isSignedIn: false,
+  user_id: "",
+  session_id: "",
 };
 const authSlice = createSlice({
   name: "auth",
@@ -23,11 +27,16 @@ const authSlice = createSlice({
     //   state.token = token;
     //   state.id = id;
     // },
-    logIn: (state) => {
+    logIn: (state, action) => {
+      const { userId, sessionId } = action.payload;
       state.isSignedIn = true;
+      state.user_id = userId;
+      state.session_id = sessionId;
     },
     logOut: (state) => {
       state.isSignedIn = false;
+      state.session_id = "";
+      state.user_id = "";
     },
   },
 });
@@ -35,6 +44,8 @@ export const { logIn, logOut } = authSlice.actions;
 export default authSlice.reducer;
 export const selectCurrentIsSignedIn = (state: RootState) =>
   state.auth.isSignedIn;
-// export const selectCurrentUserId = (state: RootState) => state.auth.id;
+export const selectCurrentSessionId = (state: RootState) =>
+  state.auth.session_id;
+export const selectCurrentUserId = (state: RootState) => state.auth.user_id;
 // export const selectCurrentUser = (state: RootState) => state.auth.user;
 // export const selectCurrentToken = (state: RootState) => state.auth.token;
