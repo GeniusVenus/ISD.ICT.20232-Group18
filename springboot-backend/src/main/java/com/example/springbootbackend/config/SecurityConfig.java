@@ -35,6 +35,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 @Configuration
@@ -74,10 +75,16 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/users/**",
                                 "/api/logout",
+                                "/api/orders",
+                                "/api/orders/?",
+                                "/api/orders/test",
+                                "/api/orders/user/?",
+                                "/api/orders/**",
                                 "/api/cart/**",
                                 "/api/payment",
                                 "/api/cart/bill",
                                 "/api/logout"
+
                         ).authenticated()
                 )
                 .authorizeHttpRequests(auth -> auth
@@ -134,4 +141,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }
