@@ -1,9 +1,11 @@
 package com.example.springbootbackend.controller;
 
+import com.example.springbootbackend.model.ShoppingSession;
 import com.example.springbootbackend.model.User;
 import com.example.springbootbackend.request.LoginRequest;
 import com.example.springbootbackend.request.RegistrationRequest;
 import com.example.springbootbackend.service.JwtService;
+import com.example.springbootbackend.service.SessionService;
 import com.example.springbootbackend.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -20,6 +22,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
+
 import static com.example.springbootbackend.utils.EmailValidator.isValidEmail;
 
 @RestController
@@ -30,14 +34,16 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final SessionService sessionService;
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
-    public AuthController(UserService userService, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, PasswordEncoder passwordEncoder, JwtService jwtService, AuthenticationManager authenticationManager, SessionService sessionService) {
         this.userService = userService;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.sessionService = sessionService;
     }
 
     private boolean isValid(RegistrationRequest request) {
@@ -108,6 +114,11 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             String jwtToken = jwtService.generateToken(request.getUsername());
             setJwtTokenCookie(jwtToken, response);
+            ShoppingSession session = new ShoppingSession();
+            session.setUser(user);
+            session.setTotal(BigDecimal.valueOf(0));
+            sessionService.saveSession(session);
+            log.info("Session ID: {}", session.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
@@ -144,6 +155,11 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             String jwtToken = jwtService.generateToken(existingUser.getUsername());
             setJwtTokenCookie(jwtToken, response);
+            ShoppingSession session = new ShoppingSession();
+            session.setUser(existingUser);
+            session.setTotal(BigDecimal.valueOf(0));
+            sessionService.saveSession(session);
+            log.info("Session ID: {}", session.getId());
             return ResponseEntity.ok().body("User logged in successfully");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
