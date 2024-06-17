@@ -2,15 +2,16 @@ import { Helmet } from "react-helmet";
 import full_title from "../../utils/full_title";
 import "./style.scss";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { toast } from "react-toastify";
 import { useParams } from "react-router";
 import useProductDetail from "../../service/api/product/useProductDetail";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
 const ProductDetail = () => {
   const { product_id } = useParams();
   const { data: product, isLoading, isError } = useProductDetail(product_id);
+  const {mutate: addProductToCart} = useAddProductToCart();
   const handleAddItem = () => {
-    toast.success(`Add ${product.name} to cart successfully`);
+      addProductToCart(product_id)
   };
   const BookInfo = (
     <>
@@ -88,6 +89,7 @@ const ProductDetail = () => {
                     ? BookInfo
                     : DVDInfo}
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
+                  <Card.Text>Quantity: {product.quantity}</Card.Text>
                   <Button variant="primary" onClick={handleAddItem}>
                     Add to Cart
                   </Button>

@@ -6,3 +6,28 @@
     min-height: calc(100vh - 49px - 58.75px);
   }
 }
+.button-minus {
+  background-color: red;
+  color: white;
+  border-color: red;
+
+  &:hover,
+  &:focus {
+    background-color: darkred;
+    border-color: darkred;
+    color: white;
+  }
+}
+
+.button-plus {
+  background-color: green;
+  color: white;
+  border-color: green;
+
+  &:hover,
+  &:focus {
+    background-color: darkgreen;
+    border-color: darkgreen;
+    color: white;
+  }
+}

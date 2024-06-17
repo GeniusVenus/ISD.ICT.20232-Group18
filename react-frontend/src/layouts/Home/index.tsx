@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 const HomeLayout = () => {
   return (
     <>
-      <ToastContainer />
+      <ToastContainer autoClose={2000} />
       <NavBar />
       <Outlet />
       <Footer />

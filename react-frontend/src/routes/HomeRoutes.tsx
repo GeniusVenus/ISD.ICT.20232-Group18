@@ -5,6 +5,7 @@ import Cart from "../pages/Cart";
 import HomeLayout from "../layouts/Home";
 import PlaceOrder from "../pages/PlaceOrder";
 import ProductDetail from "../pages/ProductDetail";
+import Notification from "../pages/Notification";
 const routes: Array<RouteElement> = [
   {
     path: "",
@@ -30,6 +31,12 @@ const routes: Array<RouteElement> = [
     public: true,
     element: <ProductDetail />,
   },
+  {
+    path: "notification",
+    exact: true,
+    public: true, 
+    element: <Notification />
+  }
 ];
 const HomeRoutes = (
   <Route path="/" element={<HomeLayout />}>

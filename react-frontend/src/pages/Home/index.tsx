@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Container, Row, Col, Card, Form, Dropdown } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import Helmet from "react-helmet";
 import full_title from "../../utils/full_title";
@@ -10,6 +9,7 @@ import ReactPaginate from "react-paginate";
 import "./style.scss";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useAllProducts from "../../service/api/product/useAllProducts";
+import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
 const categories = ["All", "Book", "DVD", "CD"];
 // const products = [
 //   { id: 1, name: "The Rings", price: 10, category: "Book" },
@@ -32,6 +32,7 @@ const Home = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
   const { data: products, isLoading, isError } = useAllProducts();
+  const {mutate: addProductToCart} = useAddProductToCart();
   const itemsPerPage = 12; // Number of items per page
   const offset = currentPage * itemsPerPage;
   console.log(products);
@@ -54,7 +55,7 @@ const Home = () => {
 
   const handleAddItem = (item: any) => {
     console.log("Add item", item);
-    toast.success(`Added ${item.name} to cart successfully`);
+    addProductToCart(item.id)
   };
 
   const handlePageClick = (data: any) => {
@@ -99,7 +100,7 @@ const Home = () => {
             </Form.Group>
           </Col>
         </Row>
-        {isLoading ? (
+        {isError ? "Something wrong happened" : isLoading ? (
           <div className="loading-section">
             {" "}
             <LoadingSpinner />{" "}

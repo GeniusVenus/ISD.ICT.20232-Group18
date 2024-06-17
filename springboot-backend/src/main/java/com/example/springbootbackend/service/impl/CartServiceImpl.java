@@ -44,13 +44,13 @@ public class CartServiceImpl implements CartService {
         try {
 
 
-
             Integer product = productRepository.findById(productid).get().getQuantity();
             if (product < quantity) {
                 return new Error("Product's quantity is not enough");
             }
 
-            boolean check = cartRepository.findAll().stream().allMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
+            boolean check = cartRepository.findAll().stream().anyMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
+            System.out.println(check);
             if (check==false) {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setProduct(productRepository.findById(productid).get());
@@ -65,7 +65,6 @@ public class CartServiceImpl implements CartService {
             } else {
             CartItem cartItem = cartRepository.findAll().stream().filter(cartItem1 -> cartItem1.getProduct().getId().equals(productid)).collect(Collectors.toList()).get(0);
             cartItem.setQuantity(cartItem.getQuantity() + quantity);
-            productRepository.findById(productid).get().setQuantity(product - quantity);
             cartRepository.save(cartItem);
             return cartItem;
         }
