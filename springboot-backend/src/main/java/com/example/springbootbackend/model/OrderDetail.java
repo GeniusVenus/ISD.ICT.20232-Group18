@@ -1,18 +1,25 @@
 package com.example.springbootbackend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "order_details")
+
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@Table(name = "order_details", schema = "itss")
 public class OrderDetail {
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -23,9 +30,14 @@ public class OrderDetail {
     @Column(name = "total", nullable = false, precision = 10)
     private BigDecimal total;
 
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<OrderItem> orderItems;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "payment_id", nullable = false)
     private PaymentDetail payment;
+
 
     @Column(name = "created_at")
     private Instant createdAt;
@@ -34,3 +46,4 @@ public class OrderDetail {
     private Instant updatedAt;
 
 }
+
