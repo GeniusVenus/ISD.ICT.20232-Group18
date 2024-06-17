@@ -83,7 +83,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegistrationRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> register(@RequestBody RegistrationRequest request, HttpServletResponse response) {
         if (!isValid(request)) {
             return ResponseEntity.badRequest().body("Invalid request");
         }
@@ -119,14 +119,14 @@ public class AuthController {
             session.setTotal(BigDecimal.valueOf(0));
             sessionService.saveSession(session);
             log.info("Session ID: {}", session.getId());
-            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body(session.getId());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
         }
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest request, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         if (!isValidLoginRequest(request)) {
             return ResponseEntity.badRequest().body("Invalid request");
         }
@@ -160,7 +160,7 @@ public class AuthController {
             session.setTotal(BigDecimal.valueOf(0));
             sessionService.saveSession(session);
             log.info("Session ID: {}", session.getId());
-            return ResponseEntity.ok().body("User logged in successfully");
+            return ResponseEntity.ok().body(session.getId());
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
         }
