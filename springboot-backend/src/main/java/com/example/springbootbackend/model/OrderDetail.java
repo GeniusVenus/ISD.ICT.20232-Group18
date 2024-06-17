@@ -13,70 +13,33 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
-
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "order_details", schema = "itss")
-
-
 public class OrderDetail {
-    private Integer id;
-
-    private User user;
-
-    private BigDecimal total;
-
-
-
-    private Instant createdAt;
-
-    private Instant updatedAt;
-
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
-    }
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    public User getUser() {
-        return user;
-    }
+    private User user;
 
     @Column(name = "total", nullable = false, precision = 10)
-    public BigDecimal getTotal() {
-        return total;
-    }
+    private BigDecimal total;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "payment_id", referencedColumnName = "id", nullable = false)
     private PaymentDetail payment;
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "payment_id", nullable = false)
-    public PaymentDetail getPayment() {
-        return payment;
-    }
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
-//    tránh lặp
     private List<OrderItem> orderItems;
 
     @Column(name = "created_at")
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
+    private Instant createdAt;
 
     @Column(name = "updated_at")
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-
-
-
-
+    private Instant updatedAt;
 }
-
