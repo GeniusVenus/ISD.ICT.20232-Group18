@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -43,8 +44,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderItem> getOrderItems() {
-        return null;
+    public List<OrderItem> getOrderItemsByOrderId(int order_id) {
+
+        return orderItemRepository.findByOrderId(order_id);
     }
 
     @Override
@@ -57,9 +59,11 @@ public class OrderServiceImpl implements OrderService {
             return  null;
         }
     }
+
+
     @Override
-    public List<OrderDetail> getAllOrderDetails() {
-        return orderDetailRepository.findAll();
+    public List<OrderDetail> getAllOrderDetailsByUserId(int use_id) {
+        return orderDetailRepository.findByUserId(use_id);
     }
 
     @Override
@@ -67,5 +71,67 @@ public class OrderServiceImpl implements OrderService {
         return paymentDetailRepository.findById(payment_id);
     }
 
+    public OrderDetail createOrderDetail(OrderDetail orderDetail) {
+        orderDetail.setCreatedAt(Instant.now());
+        orderDetail.setUpdatedAt(Instant.now());
+
+        PaymentDetail paymentDetail = orderDetail.getPayment();
+        paymentDetail.setCreatedAt(Instant.now());
+        paymentDetail.setUpdatedAt(Instant.now());
+        orderDetail.setPayment(paymentDetail);
+
+        // Set the order for each OrderItem and set timestamps
+        List<OrderItem> orderItems = orderDetail.getOrderItems();
+        for (OrderItem item : orderItems) {
+            item.setOrder(orderDetail);
+            item.setCreatedAt(Instant.now());
+            item.setUpdatedAt(Instant.now());
+        }
+
+        return orderDetailRepository.save(orderDetail);
+    }
+
+    public OrderDetail updateOrderDetail(int orderId, OrderDetail orderDetail) {
+        if (orderDetailRepository.existsById(orderId)) {
+            orderDetail.setId(orderId);
+            return orderDetailRepository.save(orderDetail);
+        }
+        return null;
+    }
+
+    public boolean deleteOrderDetail(int orderId) {
+        if (orderDetailRepository.existsById(orderId)) {
+            orderDetailRepository.deleteById(orderId);
+            return true;
+        }
+        return false;
+    }
+
+
+    public Optional<OrderItem> getOrderItemById(Integer id) {
+        return orderItemRepository.findById((long) id);
+    }
+
+    public OrderItem createOrderItem(OrderItem orderItem) {
+        return orderItemRepository.save(orderItem);
+    }
+
+    public Optional<OrderItem> updateOrderItem(Integer id, OrderItem orderItem) {
+        return orderItemRepository.findById(Long.valueOf(id)).map(existingOrderItem -> {
+            existingOrderItem.setOrder(orderItem.getOrder());
+            existingOrderItem.setProduct(orderItem.getProduct());
+            existingOrderItem.setQuantity(orderItem.getQuantity());
+            existingOrderItem.setCreatedAt(orderItem.getCreatedAt());
+            existingOrderItem.setUpdatedAt(orderItem.getUpdatedAt());
+            return orderItemRepository.save(existingOrderItem);
+        });
+    }
+
+    public boolean deleteOrderItem(Integer id) {
+        return orderItemRepository.findById(Long.valueOf(id)).map(orderItem -> {
+            orderItemRepository.delete(orderItem);
+            return true;
+        }).orElse(false);
+    }
 
 }

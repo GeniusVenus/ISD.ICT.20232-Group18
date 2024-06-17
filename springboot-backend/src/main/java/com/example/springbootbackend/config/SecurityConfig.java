@@ -73,7 +73,9 @@ public class SecurityConfig {
                                 "/api/logout",
                                 "/api/orders",
                                 "/api/orders/?",
-                                "/api/orders/test"
+                                "/api/orders/test",
+                                "/api/orders/user/?",
+                                "/api/orders/**"
 
                         ).authenticated()
                 )

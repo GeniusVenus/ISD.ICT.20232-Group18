@@ -1,5 +1,7 @@
 package com.example.springbootbackend.controller;
-
+import com.example.springbootbackend.DTO.OrderDetailDTO;
+import com.example.springbootbackend.DTO.*;
+import com.example.springbootbackend.utils.DTOConverter;
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.OrderDetail;
 import com.example.springbootbackend.model.PaymentDetail;
@@ -34,8 +36,8 @@ public class OrderController {
     @GetMapping("/{order_id}")
     public ResponseEntity<?> getOrderDetail(@PathVariable("order_id") int order_id) {
         OrderDetail orderDetail = orderService.getOrderDetail(order_id);
-        List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
-        PaymentDetail paymentDetail = orderService.getPaymentDetail(order_id);
+        List<OrderItem> orderItems = orderService.getOrderItemsByOrderId(order_id);
+//        PaymentDetail paymentDetail = orderService.getPaymentDetail(order_id);
 
         if (orderDetail != null) {
             payment_id = orderDetail.getPayment().getId();
@@ -55,16 +57,11 @@ public class OrderController {
             response.put("id", orderDetail.getId());
             response.put("user_id", orderDetail.getUser().getId());
             response.put("total", orderDetail.getTotal());
-//            response.put("payment_id", orderDetail.getPayment());
+            response.put("payment",orderDetail.getPayment());
             response.put("order_items", matchingOrderItems);
-
             response.put("createdAt",orderDetail.getCreatedAt());
             response.put("updateAt",orderDetail.getUpdatedAt());
 
-            response.put("payment_id",paymentDetail.getId());
-            response.put("status",paymentDetail.getStatus());
-            response.put("amount",paymentDetail.getAmount());
-            response.put("provider",paymentDetail.getProvider());
 
             return ResponseEntity.ok(response);
         } else {
@@ -74,17 +71,21 @@ public class OrderController {
 
 
 
-
-    @GetMapping("/{user_id}")
-    public ResponseEntity<List<Map<String, Object>>> getOrderItemsByCurrentUser() {
-        List<OrderItem> orderItems = orderService.getOrderItemsByCurrentUser();
-        List<Map<String, Object>> response = orderItems.stream()
-                .map(orderItem -> {
+    @GetMapping("/user/{user_id}")
+    public ResponseEntity<?> getAllOrderDetailsByUserId(@PathVariable("user_id") int userId) {
+        List<OrderDetail> orderDetails = orderService.getAllOrderDetailsByUserId(userId);
+        if (orderDetails.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        List<Map<String, Object>> response = orderDetails.stream()
+                .map(orderDetail -> {
                     Map<String, Object> orderMap = new HashMap<>();
-                    orderMap.put("id", orderItem.getId());
-                    orderMap.put("order_id", orderItem.getId());
-                    orderMap.put("product_id", orderItem.getProduct().getId());
-                    orderMap.put("quantity", orderItem.getQuantity());
+                    orderMap.put("id", orderDetail.getId());
+                    orderMap.put("user_id", orderDetail.getUser().getId());
+                    orderMap.put("total",orderDetail.getTotal());
+                    orderMap.put("createAt",orderDetail.getCreatedAt());
+                    orderMap.put("updateAt",orderDetail.getUpdatedAt());
+                    orderMap.put("payment",orderDetail.getPayment());
                     return orderMap;
                 })
                 .collect(Collectors.toList());
@@ -92,6 +93,49 @@ public class OrderController {
         return ResponseEntity.ok(response);
     }
 
+
+//    CRUD Order Detail
+    @PostMapping
+    public ResponseEntity<OrderDetailDTO> createOrderDetail(@RequestBody OrderDetail orderDetail) {
+        OrderDetail createdOrderDetail = orderService.createOrderDetail(orderDetail);
+        OrderDetailDTO dto = DTOConverter.convertToOrderDetailDTO(createdOrderDetail);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dto);
+    }
+
+    @PutMapping("/{order_id}")
+    public ResponseEntity<OrderDetailDTO> updateOrderDetail(@PathVariable("order_id") int orderId, @RequestBody OrderDetail orderDetail) {
+        Optional<OrderDetail> updatedOrderDetail = Optional.ofNullable(orderService.updateOrderDetail(orderId, orderDetail));
+        return updatedOrderDetail.map(detail -> ResponseEntity.ok(DTOConverter.convertToOrderDetailDTO(detail)))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/{order_id}")
+    public ResponseEntity<Void> deleteOrderDetail(@PathVariable("order_id") int orderId) {
+        boolean isDeleted = orderService.deleteOrderDetail(orderId);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+//    CRUD OrderItem
+
+
+    @PutMapping("/items/{item_id}")
+    public ResponseEntity<OrderItem> updateOrderItem(@PathVariable Integer itemId, @RequestBody OrderItem orderItem) {
+        Optional<OrderItem> updatedOrderItem = orderService.updateOrderItem(itemId, orderItem);
+        return updatedOrderItem.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/items/{item_id}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable Integer itemId) {
+        boolean isDeleted = orderService.deleteOrderItem(itemId);
+        if (isDeleted) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
 
 }
