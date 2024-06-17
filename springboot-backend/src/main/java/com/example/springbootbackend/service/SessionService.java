@@ -15,4 +15,12 @@ public class SessionService {
     public void saveSession(ShoppingSession session) {
         sessionRepository.save(session);
     }
+
+    public ShoppingSession findLatestSessionByUserId(Integer userId) {
+        return sessionRepository.findLatestSessionByUserId(userId);
+    }
+
+    public void deleteSession(Integer sessionId) {
+        sessionRepository.deleteById(sessionId);
+    }
 }

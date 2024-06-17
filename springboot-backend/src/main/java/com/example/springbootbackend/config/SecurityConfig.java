@@ -77,7 +77,8 @@ public class SecurityConfig {
                                 "/api/cart/**",
                                 "/api/payment",
                                 "/api/cart/bill",
-                                "/api/logout"
+                                "/api/logout",
+                                "/api/session/**"
                         ).authenticated()
                 )
                 .authorizeHttpRequests(auth -> auth

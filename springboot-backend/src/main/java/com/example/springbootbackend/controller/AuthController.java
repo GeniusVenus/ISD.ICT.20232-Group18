@@ -23,6 +23,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.Optional;
 
 import static com.example.springbootbackend.utils.EmailValidator.isValidEmail;
 
@@ -83,7 +84,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegistrationRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> register(@RequestBody RegistrationRequest request, HttpServletResponse response) {
         if (!isValid(request)) {
             return ResponseEntity.badRequest().body("Invalid request");
         }
@@ -114,12 +115,7 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             String jwtToken = jwtService.generateToken(request.getUsername());
             setJwtTokenCookie(jwtToken, response);
-            ShoppingSession session = new ShoppingSession();
-            session.setUser(user);
-            session.setTotal(BigDecimal.valueOf(0));
-            sessionService.saveSession(session);
-            log.info("Session ID: {}", session.getId());
-            return ResponseEntity.status(HttpStatus.CREATED).body(session.getId());
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
         }
@@ -155,10 +151,15 @@ public class AuthController {
         if (authentication.isAuthenticated()) {
             String jwtToken = jwtService.generateToken(existingUser.getUsername());
             setJwtTokenCookie(jwtToken, response);
-            ShoppingSession session = new ShoppingSession();
-            session.setUser(existingUser);
-            session.setTotal(BigDecimal.valueOf(0));
-            sessionService.saveSession(session);
+            Optional<ShoppingSession> optionalShoppingSession = Optional.ofNullable(sessionService.findLatestSessionByUserId(existingUser.getId()));
+            ShoppingSession session = optionalShoppingSession.orElseGet(() -> {
+                ShoppingSession newSession = new ShoppingSession();
+                newSession.setUser(existingUser);
+                newSession.setTotal(BigDecimal.ZERO);
+                sessionService.saveSession(newSession);
+                log.info("New session ID: {}", newSession.getId());
+                return newSession;
+            });
             log.info("Session ID: {}", session.getId());
             return ResponseEntity.ok().body(session.getId());
         } else {
