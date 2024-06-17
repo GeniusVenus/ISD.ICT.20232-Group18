@@ -1,5 +1,6 @@
 package com.example.springbootbackend.controller;
 
+import com.example.springbootbackend.DTO.AuthResponse;
 import com.example.springbootbackend.model.ShoppingSession;
 import com.example.springbootbackend.model.User;
 import com.example.springbootbackend.request.LoginRequest;
@@ -161,7 +162,11 @@ public class AuthController {
                 return newSession;
             });
             log.info("Session ID: {}", session.getId());
-            return ResponseEntity.ok().body(session.getId());
+            AuthResponse res = AuthResponse.builder()
+                    .userId(existingUser.getId())
+                    .sessionId(session.getId())
+                    .build();
+            return ResponseEntity.ok().body(res);
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User registration failed");
         }
