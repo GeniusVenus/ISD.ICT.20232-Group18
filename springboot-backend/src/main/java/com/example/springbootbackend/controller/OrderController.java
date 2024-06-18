@@ -1,6 +1,7 @@
 package com.example.springbootbackend.controller;
 import com.example.springbootbackend.DTO.OrderDetailDTO;
 import com.example.springbootbackend.DTO.*;
+import com.example.springbootbackend.service.ProductService;
 import com.example.springbootbackend.utils.DTOConverter;
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.OrderDetail;
@@ -25,12 +26,13 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     private final OrderService orderService;
-
+    private final ProductService productService;
     private int payment_id;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ProductService productService) {
         this.orderService = orderService;
+        this.productService = productService;
     }
 
     @GetMapping("/{order_id}")
@@ -145,9 +147,8 @@ public class OrderController {
 
         PaymentDetail updatedPaymentDetail = orderService.updatePaymentStatus(paymentId, status);
         PaymentDetailDTO paymentDetailDTO = DTOConverter.convertToPaymentDetailDTO(updatedPaymentDetail);
+        productService.updateQuantitiesForOrder(paymentId);
         return ResponseEntity.ok(paymentDetailDTO);
     }
-
-
 
 }
