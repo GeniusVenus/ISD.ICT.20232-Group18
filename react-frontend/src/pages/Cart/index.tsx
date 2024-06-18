@@ -12,6 +12,8 @@ import useCart from "../../service/api/cart/useCart";
 import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
 import useDeleteProductFromCart from "../../service/api/cart/useDeleteProductFromCart";
 import useUpdateCart from "../../service/api/cart/useUpdateCart";
+import { useSelector } from "react-redux";
+import { selectCurrentSessionId } from "../../service/redux/auth/authSlice";
 const Cart = () => {
   const navigate = useNavigate();
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -22,9 +24,15 @@ const Cart = () => {
   const { mutate: addProductToCart } = useAddProductToCart();
   const { mutate: deleteProductFromCart } = useDeleteProductFromCart();
   const { mutate: updateCart } = useUpdateCart();
+  const session_id = useSelector(selectCurrentSessionId);
   console.log(cartItems);
   const handleAddItem = (item: any) => {
-    addProductToCart(item?.product?.id);
+    if (item?.quantity < item?.product?.quantity) {
+      addProductToCart({
+        product_id: item?.product?.id,
+        session_id: session_id,
+      });
+    }
   };
 
   const handleDecreaseItem = (item: any) => {
@@ -33,6 +41,7 @@ const Cart = () => {
       return;
     }
     updateCart({
+      session_id: session_id,
       product_id: item?.product?.id,
       quantity: item?.quantity - 1,
     });
@@ -49,12 +58,16 @@ const Cart = () => {
   };
 
   const handleConfirmDelete = () => {
-    deleteProductFromCart(selectedItem?.product?.id);
+    deleteProductFromCart({
+      product_id: selectedItem?.product?.id,
+      session_id: session_id,
+    });
     handleCloseDeleteModal();
   };
 
   const handleUpdateItem = (itemId: any, quantity: any) => {
     updateCart({
+      session_id: session_id,
       product_id: itemId,
       quantity: quantity ? quantity : 0,
     });

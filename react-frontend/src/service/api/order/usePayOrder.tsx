@@ -1,13 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import client from "../clientAPI";
 import { toast } from "react-toastify";
-const payOrder = async (order_id: string | null) => {
-  return await client.put(`orders/payments/${order_id}/status?status=paid`);
+type Body = {
+  session_id: string | null;
+  order_id: string | null;
+};
+const payOrder = async (body: Body) => {
+  return await client.put(
+    `orders/payments/${body?.order_id}/status?status=paid&session_id=${body?.session_id}`
+  );
 };
 const usePayOrder = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (order_id: string) => payOrder(order_id),
+    mutationFn: (body: Body) => payOrder(body),
     onMutate: () => {
       console.log("mutate");
     },
@@ -17,8 +23,10 @@ const usePayOrder = () => {
     },
     onSuccess: (data, variables) => {
       console.log(data);
-      toast.success(`Pay order ${variables} successfully`);
-      queryClient.invalidateQueries({ queryKey: ["order", variables] });
+      toast.success(`Pay order ${variables.order_id} successfully`);
+      queryClient.invalidateQueries({
+        queryKey: ["order", variables.order_id],
+      });
       queryClient.invalidateQueries({ queryKey: ["all-products"] });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
       queryClient.invalidateQueries({ queryKey: ["orders"] });

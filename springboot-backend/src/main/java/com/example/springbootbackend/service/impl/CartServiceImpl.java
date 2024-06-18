@@ -62,7 +62,6 @@ public class CartServiceImpl implements CartService {
             } else {
                 CartItem cartItem = cartRepository.findAll().stream().filter(cartItem1 -> cartItem1.getProduct().getId().equals(productid)).collect(Collectors.toList()).get(0);
                 cartItem.setQuantity(cartItem.getQuantity() + quantity);
-                productRepository.findById(productid).get().setQuantity(product - quantity);
                 cartRepository.save(cartItem);
                 return cartItem;
             }

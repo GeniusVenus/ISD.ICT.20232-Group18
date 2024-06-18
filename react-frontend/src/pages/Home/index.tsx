@@ -10,6 +10,9 @@ import "./style.scss";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useAllProducts from "../../service/api/product/useAllProducts";
 import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
+import { useSelector } from "react-redux";
+import { selectCurrentSessionId } from "../../service/redux/auth/authSlice";
+import useCart from "../../service/api/cart/useCart";
 const categories = ["All", "Book", "DVD", "CD"];
 // const products = [
 //   { id: 1, name: "The Rings", price: 10, category: "Book" },
@@ -31,8 +34,9 @@ const Home = () => {
   const [filterCategory, setFilterCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(0);
+  const session_id = useSelector(selectCurrentSessionId);
   const { data: products, isLoading, isError } = useAllProducts();
-  const {mutate: addProductToCart} = useAddProductToCart();
+  const { mutate: addProductToCart } = useAddProductToCart();
   const itemsPerPage = 12; // Number of items per page
   const offset = currentPage * itemsPerPage;
   console.log(products);
@@ -52,10 +56,12 @@ const Home = () => {
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-
   const handleAddItem = (item: any) => {
     console.log("Add item", item);
-    addProductToCart(item.id)
+    addProductToCart({
+      product_id: item?.id,
+      session_id: session_id,
+    });
   };
 
   const handlePageClick = (data: any) => {
@@ -100,7 +106,9 @@ const Home = () => {
             </Form.Group>
           </Col>
         </Row>
-        {isError ? "Something wrong happened" : isLoading ? (
+        {isError ? (
+          "Something wrong happened"
+        ) : isLoading ? (
           <div className="loading-section">
             {" "}
             <LoadingSpinner />{" "}
@@ -132,17 +140,19 @@ const Home = () => {
                       <Card.Text className="text-muted mb-1">
                         Price: ${product.price}
                       </Card.Text>
-                      <div
-                        className="add-to-cart-container"
-                        onClick={() => handleAddItem(product)}
-                      >
-                        <div className="add-to-cart-button">
-                          <FontAwesomeIcon
-                            icon={faCartShopping}
-                            color="white"
-                          />
+                      {session_id && (
+                        <div
+                          className="add-to-cart-container"
+                          onClick={() => handleAddItem(product)}
+                        >
+                          <div className="add-to-cart-button">
+                            <FontAwesomeIcon
+                              icon={faCartShopping}
+                              color="white"
+                            />
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </Card.Body>
                   </Card>
                 </Col>

@@ -1,14 +1,19 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import client from "../clientAPI";
 import { toast } from "react-toastify";
-
-const addProductToCart = async (product_id: string | undefined) => {
-  return await client.post(`cart/product/${product_id}?quantity=1&session_id=1`);
+type Body = {
+  session_id: string | null;
+  product_id: string | null | undefined;
+};
+const addProductToCart = async (body: Body) => {
+  return await client.post(
+    `cart/product/${body?.product_id}?quantity=1&session_id=${body?.session_id}`
+  );
 };
 const useAddProductToCart = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (product_id: string | undefined) => addProductToCart(product_id),
+    mutationFn: (body: Body) => addProductToCart(body),
     onMutate: () => {
       console.log("mutate");
     },
@@ -18,8 +23,10 @@ const useAddProductToCart = () => {
     },
     onSuccess: (data, variables) => {
       console.log(data);
-      toast.success(`Add product ${variables} successfully`);
-      queryClient.invalidateQueries({ queryKey: ["product", variables]});
+      toast.success(`Add product ${variables.product_id} successfully`);
+      queryClient.invalidateQueries({
+        queryKey: ["product", variables.product_id],
+      });
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
     onSettled: () => {},

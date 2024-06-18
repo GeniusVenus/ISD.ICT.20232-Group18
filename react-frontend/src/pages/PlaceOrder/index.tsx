@@ -81,7 +81,7 @@ const PlaceOrder = () => {
       <h5>Subtotal: ${subTotal}</h5>
       <h5>Shipping fee: ${shippingFee}</h5>
       <h4 style={{ color: "red" }}>
-        Total Price: ${totalPrice} {`VAT(10%)`}
+        Total Price: ${totalPrice.toFixed(2)} {`VAT(10%)`}
       </h4>
     </div>
   );

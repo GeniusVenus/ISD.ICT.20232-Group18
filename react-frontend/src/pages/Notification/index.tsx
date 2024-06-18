@@ -11,6 +11,8 @@ import {
 import { useEffect } from "react";
 import usePayOrder from "../../service/api/order/usePayOrder";
 import useOrderDetail from "../../service/api/order/useOrderDetail";
+import { useSelector } from "react-redux";
+import { selectCurrentSessionId } from "../../service/redux/auth/authSlice";
 const formatCurrency = (amount: any) => {
   return new Intl.NumberFormat("vi-VN", {
     style: "currency",
@@ -28,6 +30,7 @@ const formatDateTime = (dateTimeString: string) => {
 };
 const Notification = () => {
   const [searchParams] = useSearchParams();
+  const session_id = useSelector(selectCurrentSessionId);
   const { mutate: payOrder } = usePayOrder();
   const paramsObject = {};
   searchParams.forEach((value, key) => {
@@ -57,7 +60,10 @@ const Notification = () => {
         order?.payment?.status === "pending" &&
         paramsObject?.vnp_TransactionNo !== "0"
       ) {
-        payOrder(paramsObject?.vnp_OrderInfo);
+        payOrder({
+          order_id: paramsObject?.vnp_OrderInfo,
+          session_id: session_id,
+        });
       }
     }
   }, [

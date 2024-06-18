@@ -6,12 +6,18 @@ import { useParams } from "react-router";
 import useProductDetail from "../../service/api/product/useProductDetail";
 import LoadingSpinner from "../../components/LoadingSpinner";
 import useAddProductToCart from "../../service/api/cart/useAddProductToCart";
+import { useSelector } from "react-redux";
+import { selectCurrentSessionId } from "../../service/redux/auth/authSlice";
 const ProductDetail = () => {
   const { product_id } = useParams();
+  const session_id = useSelector(selectCurrentSessionId);
   const { data: product, isLoading, isError } = useProductDetail(product_id);
-  const {mutate: addProductToCart} = useAddProductToCart();
+  const { mutate: addProductToCart } = useAddProductToCart();
   const handleAddItem = () => {
-      addProductToCart(product_id)
+    addProductToCart({
+      product_id: product_id,
+      session_id: session_id,
+    });
   };
   const BookInfo = (
     <>
@@ -90,9 +96,11 @@ const ProductDetail = () => {
                     : DVDInfo}
                   <Card.Text>Price: ${product.price.toFixed(2)}</Card.Text>
                   <Card.Text>Quantity: {product.quantity}</Card.Text>
-                  <Button variant="primary" onClick={handleAddItem}>
-                    Add to Cart
-                  </Button>
+                  {session_id && (
+                    <Button variant="primary" onClick={handleAddItem}>
+                      Add to Cart
+                    </Button>
+                  )}
                 </Card.Body>
               </Card>
             </Col>
