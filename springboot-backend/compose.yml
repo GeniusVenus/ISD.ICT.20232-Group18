@@ -9,5 +9,9 @@ services:
       MYSQL_DATABASE: itss
       MYSQL_USER: itss
       MYSQL_PASSWORD: 123456
+    volumes:
+      - mysql:/var/lib/mysql
     ports:
       - "3306:3306"
+volumes:
+  mysql:

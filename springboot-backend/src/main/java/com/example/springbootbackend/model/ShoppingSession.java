@@ -28,6 +28,7 @@ public class ShoppingSession {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     public Integer getId() {
         return id;
     }
@@ -53,6 +54,4 @@ public class ShoppingSession {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
-
-
 }

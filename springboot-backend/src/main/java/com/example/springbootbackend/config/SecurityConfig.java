@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -34,6 +35,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Supplier;
 
 @Configuration
@@ -64,20 +66,41 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/login",
                                 "/api/register",
-                                "api/product",
-                                "/api/products/**"
+                                "/api/payment/",
+                                "/api/view/**"
                         ).permitAll()
+
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/users/**",
-                                "/api/logout"
+                                "/api/logout",
+                                "/api/orders",
+                                "/api/orders/?",
+                                "/api/orders/test",
+                                "/api/orders/user/?",
+                                "/api/orders/**",
+                                "/api/cart/**",
+                                "/api/payment",
+                                "/api/cart/bill",
+                                "/api/logout",
+                                "/api/session/**"
                         ).authenticated()
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/api/admin/**"
-                        ).hasRole("ADMIN")
+                                "/api/admin/**",
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
+                        ).hasAuthority("ADMIN")
+                )
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/add/product",
+                                "/api/delete/product/**",
+                                "/api/update/product/**"
+                        ).hasAuthority("PRODUCT MANAGER")
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -110,12 +133,15 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*")); // Allow all domains
+        configuration.setAllowedOrigins(List.of("http://localhost:5173"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("Set-Cookie"));
         configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }
