@@ -2,15 +2,23 @@ package com.example.springbootbackend.controller;
 
 import com.example.springbootbackend.model.CartItem;
 import com.example.springbootbackend.service.impl.CartServiceImpl;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cart")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class CartController {
     static class SessionObject {
@@ -29,11 +37,11 @@ public class CartController {
     public CartController(CartServiceImpl cartService) {
         this.cartService = cartService;
     }
-    @GetMapping("/cart")
-    public List<CartItem> getCart(@RequestParam Integer session_id){
+    @GetMapping("")
+    public List<CartItem> getCart(@RequestParam String session_id){
 //        Integer session_id = session.getSession_id();
         try {
-            List<CartItem> cart =  cartService.getCartItem(session_id);
+            List<CartItem> cart =  cartService.getCartItem(parseInt(session_id));
             if(cart == null){
 
                 throw new Error("Cart not found");
@@ -43,7 +51,7 @@ public class CartController {
             throw new RuntimeException("Cart not found");
         }
     }
-    @PostMapping("/cart/product/{product_id}")
+    @PostMapping("/product/{product_id}")
     public ResponseEntity<?> addProductToCart(@PathVariable("product_id") Integer productid, @RequestParam Integer quantity,@RequestParam Integer session_id){
         try {
             var newProduct = cartService.addProductToCart(productid, quantity,session_id);
@@ -56,7 +64,7 @@ public class CartController {
         }
     }
 
-    @PutMapping("/cart/product/{product_id}")
+    @PutMapping("/product/{product_id}")
     public ResponseEntity<?> updateProductOnCart(@PathVariable("product_id") Integer productid, @RequestParam Integer quantity, @RequestParam Integer session_id){
         try {
             var newProduct = cartService.updateProductOnCart(productid, quantity,session_id);
@@ -69,7 +77,7 @@ public class CartController {
         }
     }
 
-    @DeleteMapping("/cart/product/{product_id}")
+    @DeleteMapping("/product/{product_id}")
     public ResponseEntity<?> deleteProductFromCart(@PathVariable("product_id") Integer productid, @RequestParam Integer session_id){
         try {
             var newProduct = cartService.deleteProductFromCart(productid,session_id);
@@ -81,18 +89,31 @@ public class CartController {
             return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/pay-order")
-    public ResponseEntity<?> payOrder(@RequestParam Integer session_id){
+
+    @GetMapping("/bill")
+    public ResponseEntity<?> bill(HttpServletRequest request){
         try {
-            var newProduct = cartService.payOrder(session_id);
-            if (newProduct == null) {
-                return new ResponseEntity<>("Error to pay order", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity<>("Order paid", HttpStatus.OK);
+            Map<String, String> responseAttributes = new HashMap<>();
+            String orderInfo = request.getParameter("vnp_OrderInfo");
+            String paymentTime = request.getParameter("vnp_PayDate");
+            String transactionId = request.getParameter("vnp_TransactionNo");
+            String totalPrice = request.getParameter("vnp_Amount");
+
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
+
+            Date paymentTimeConverted = formatter.parse(paymentTime);
+            responseAttributes.put("orderId", orderInfo);
+            responseAttributes.put("totalPrice", String.valueOf(parseInt(totalPrice)/100));
+            responseAttributes.put("paymentTime", String.valueOf(paymentTimeConverted));
+            responseAttributes.put("transactionId", transactionId);
+
+            return new ResponseEntity<>(responseAttributes, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     @DeleteMapping("/product")
     public ResponseEntity<?> deleteAllProductFromCart(@RequestParam Integer session_id){
@@ -106,5 +127,6 @@ public class CartController {
             return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 }

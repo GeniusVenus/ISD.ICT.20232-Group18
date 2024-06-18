@@ -17,10 +17,14 @@ import java.time.Instant;
 @Table(name = "payment_details", schema = "itss")
 
 public class PaymentDetail {
+    @Id
+    @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Column(name = "amount", nullable = false, precision = 10)
     private BigDecimal amount;
 
+    @Column(name = "provider", nullable = false)
     private String provider;
 
     private String status;

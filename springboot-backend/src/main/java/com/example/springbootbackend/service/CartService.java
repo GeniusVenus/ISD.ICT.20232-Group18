@@ -12,4 +12,5 @@ public interface CartService {
     Object payOrder(Integer session_id);
 
     Object deleteAllProductFromCart(Integer session_id);
+    Object bill(Integer session_id);
 }

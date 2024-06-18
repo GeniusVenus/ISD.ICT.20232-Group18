@@ -35,6 +35,8 @@ public class Dvd {
 
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy=GenerationType.AUTO)
+
     public Integer getId() {
         return id;
     }

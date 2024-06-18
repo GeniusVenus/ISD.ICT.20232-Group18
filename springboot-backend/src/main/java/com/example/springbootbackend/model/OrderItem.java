@@ -11,10 +11,10 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
+
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Table(name = "order_items", schema = "itss")
 public class OrderItem {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -22,6 +22,7 @@ public class OrderItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "order_id", nullable = false)
+
     @JsonBackReference
     private OrderDetail order;
 
@@ -37,4 +38,6 @@ public class OrderItem {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
 }
+
