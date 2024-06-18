@@ -27,7 +27,7 @@ const Orders = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState<string | null>(null);
-
+  console.log(orders);
   const ordersPerPage = 10;
 
   const handlePageClick = (data: any) => {
@@ -126,7 +126,7 @@ const Orders = () => {
                       </div>
                     </td>
                     <td>
-                      {order?.payment?.status && (
+                      {order?.payment?.status === "pending" && (
                         <div
                           style={{
                             ...centerDiv,

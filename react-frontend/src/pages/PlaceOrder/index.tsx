@@ -51,6 +51,10 @@ const PlaceOrder = () => {
         status: "pending",
       },
       orderItems: items,
+      customerName: customerName,
+      phoneNumber: phoneNumber,
+      city: city,
+      address: address,
     };
     console.log(values);
     placeOrder(values);

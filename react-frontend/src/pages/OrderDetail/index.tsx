@@ -14,6 +14,7 @@ const OrderDetail = () => {
   const navigate = useNavigate();
   const { data: order, isLoading, isError } = useOrderDetail(order_id);
   const { mutate: Pay } = usePayment();
+  console.log(order);
   const subTotal = useMemo(
     () =>
       (order?.order_items ? order?.order_items : []).reduce(
@@ -49,8 +50,8 @@ const OrderDetail = () => {
             {" "}
             <h5>Order ID: {order?.id}</h5>
             <span>Status: {order?.payment?.status.toUpperCase()}</span>
-            <span>Customer: {order?.customer_name}</span>
-            <span>Phone number: {order?.phone_number}</span>
+            <span>Customer: {order?.customerName}</span>
+            <span>Phone number: {order?.phoneNumber}</span>
             <span>City: {order?.city}</span>
             <span>Address: {order?.address}</span>
             <Table striped bordered hover responsive>

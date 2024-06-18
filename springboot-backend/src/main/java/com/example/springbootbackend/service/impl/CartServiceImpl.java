@@ -42,15 +42,12 @@ public class CartServiceImpl implements CartService {
     @Override
     public Object addProductToCart(Integer productid, Integer quantity, Integer session_id){
         try {
-
-
             Integer product = productRepository.findById(productid).get().getQuantity();
             if (product < quantity) {
                 return new Error("Product's quantity is not enough");
             }
 
-            boolean check = cartRepository.findAll().stream().anyMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
-            System.out.println(check);
+            boolean check = cartRepository.findAll().stream().allMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
             if (check==false) {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setProduct(productRepository.findById(productid).get());
@@ -63,11 +60,12 @@ public class CartServiceImpl implements CartService {
                 cartRepository.save(newCartItem);
                 return newCartItem;
             } else {
-            CartItem cartItem = cartRepository.findAll().stream().filter(cartItem1 -> cartItem1.getProduct().getId().equals(productid)).collect(Collectors.toList()).get(0);
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
-            cartRepository.save(cartItem);
-            return cartItem;
-        }
+                CartItem cartItem = cartRepository.findAll().stream().filter(cartItem1 -> cartItem1.getProduct().getId().equals(productid)).collect(Collectors.toList()).get(0);
+                cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                productRepository.findById(productid).get().setQuantity(product - quantity);
+                cartRepository.save(cartItem);
+                return cartItem;
+            }
         } catch (Exception e) {
             return new Error("Can not add product to card");
         }}
@@ -117,14 +115,14 @@ public class CartServiceImpl implements CartService {
     }
 
 
-    @Override
-    public Object deleteAllProductFromCart(Integer session_id){
-        try {
-            List<CartItem> cartItems = cartRepository.findAll().stream().filter(cartItem -> cartItem.getSession().getId().equals(session_id)).collect(Collectors.toList());
-            cartRepository.deleteAll(cartItems);
-            return cartItems;
-        } catch (Exception e) {
-            return new Error("Can not delete all product from cart");
-        }
-    }
+//    @Override
+//    public Object deleteAllProductFromCart(Integer session_id){
+//        try {
+//            List<CartItem> cartItems = cartRepository.findAll().stream().filter(cartItem -> cartItem.getSession().getId().equals(session_id)).collect(Collectors.toList());
+//            cartRepository.deleteAll(cartItems);
+//            return cartItems;
+//        } catch (Exception e) {
+//            return new Error("Can not delete all product from cart");
+//        }
+//    }
 }

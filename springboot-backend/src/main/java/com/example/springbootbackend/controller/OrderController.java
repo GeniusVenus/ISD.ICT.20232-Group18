@@ -61,6 +61,10 @@ public class OrderController {
             response.put("user_id", orderDetail.getUser().getId());
             response.put("total", orderDetail.getTotal());
             response.put("payment",orderDetail.getPayment());
+            response.put("customerName",orderDetail.getCustomerName());
+            response.put("phoneNumber",orderDetail.getPhoneNumber());
+            response.put("city",orderDetail.getCity());
+            response.put("address",orderDetail.getAddress());
             response.put("order_items", matchingOrderItems);
             response.put("createdAt",orderDetail.getCreatedAt());
             response.put("updateAt",orderDetail.getUpdatedAt());
@@ -83,9 +87,9 @@ public class OrderController {
                     orderMap.put("id", orderDetail.getId());
                     orderMap.put("user_id", orderDetail.getUser().getId());
                     orderMap.put("total",orderDetail.getTotal());
+                    orderMap.put("payment",orderDetail.getPayment());
                     orderMap.put("createAt",orderDetail.getCreatedAt());
                     orderMap.put("updateAt",orderDetail.getUpdatedAt());
-                    orderMap.put("payment",orderDetail.getPayment());
                     return orderMap;
                 })
                 .collect(Collectors.toList());

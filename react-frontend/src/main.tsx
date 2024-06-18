@@ -22,7 +22,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
           <App />
         </PersistGate>
       </Provider>
-      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </BrowserRouter>
   // </React.StrictMode>
