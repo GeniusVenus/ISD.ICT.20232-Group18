@@ -1,6 +1,7 @@
 package com.example.springbootbackend.controller;
 import com.example.springbootbackend.DTO.OrderDetailDTO;
 import com.example.springbootbackend.DTO.*;
+import com.example.springbootbackend.service.CartService;
 import com.example.springbootbackend.service.ProductService;
 import com.example.springbootbackend.utils.DTOConverter;
 import com.example.springbootbackend.model.OrderItem;
@@ -21,19 +22,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Integer.parseInt;
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
     private final ProductService productService;
-
+    private final CartService cartService;
     private int payment_id;
 
     @Autowired
-    public OrderController(OrderService orderService, ProductService productService) {
+    public OrderController(OrderService orderService, ProductService productService, CartService cartService) {
         this.orderService = orderService;
         this.productService = productService;
+        this.cartService = cartService;
     }
 
     @GetMapping("/{order_id}")
@@ -145,11 +149,13 @@ public class OrderController {
     @PutMapping("/payments/{paymentId}/status")
     public ResponseEntity<PaymentDetailDTO> updatePaymentStatus(
             @PathVariable int paymentId,
-            @RequestParam String status) {
+            @RequestParam String status,
+            @RequestParam String session_id) {
 
         PaymentDetail updatedPaymentDetail = orderService.updatePaymentStatus(paymentId, status);
         PaymentDetailDTO paymentDetailDTO = DTOConverter.convertToPaymentDetailDTO(updatedPaymentDetail);
         productService.updateQuantitiesForOrder(paymentId);
+        cartService.deleteAllProductFromCart(status,parseInt(session_id));
         return ResponseEntity.ok(paymentDetailDTO);
     }
 

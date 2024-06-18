@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
                 return new Error("Product's quantity is not enough");
             }
 
-            boolean check = cartRepository.findAll().stream().allMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
+            boolean check = cartRepository.findAll().stream().anyMatch(cartItem -> cartItem.getProduct().getId().equals(productid) && cartItem.getSession().getId().equals(session_id));
             if (check==false) {
                 CartItem newCartItem = new CartItem();
                 newCartItem.setProduct(productRepository.findById(productid).get());
@@ -115,14 +115,18 @@ public class CartServiceImpl implements CartService {
     }
 
 
-//    @Override
-//    public Object deleteAllProductFromCart(Integer session_id){
-//        try {
-//            List<CartItem> cartItems = cartRepository.findAll().stream().filter(cartItem -> cartItem.getSession().getId().equals(session_id)).collect(Collectors.toList());
-//            cartRepository.deleteAll(cartItems);
-//            return cartItems;
-//        } catch (Exception e) {
-//            return new Error("Can not delete all product from cart");
-//        }
-//    }
+    @Override
+    public String deleteAllProductFromCart(String status,Integer session_id){
+        try {
+            if(status.equals("paid")){
+                List<CartItem> cartItems = cartRepository.findAll().stream().filter(cartItem -> cartItem.getSession().getId().equals(session_id)).collect(Collectors.toList());
+                cartRepository.deleteAll(cartItems);
+                return "Paid";
+            }
+            return "Not paid";
+
+        } catch (Exception e) {
+            return "Can not delete all product from cart";
+        }
+    }
 }

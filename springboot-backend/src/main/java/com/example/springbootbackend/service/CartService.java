@@ -11,6 +11,6 @@ public interface CartService {
     Object deleteProductFromCart(Integer product_id, Integer session_id);
 //    Object payOrder(Integer session_id);
 
-//    Object deleteAllProductFromCart(Integer session_id);
+    String deleteAllProductFromCart(String status,Integer session_id);
     Object bill(Integer session_id);
 }
