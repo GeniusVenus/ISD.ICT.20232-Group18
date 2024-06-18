@@ -11,7 +11,8 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table(name="users")
+
+@Table(name = "users")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 
 public class User {
