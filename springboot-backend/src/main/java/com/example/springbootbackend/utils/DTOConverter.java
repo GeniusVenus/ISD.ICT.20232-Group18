@@ -1,8 +1,6 @@
 package com.example.springbootbackend.utils;
 
-import com.example.springbootbackend.DTO.OrderDetailDTO;
-import com.example.springbootbackend.DTO.OrderItemDTO;
-import com.example.springbootbackend.DTO.PaymentDetailDTO;
+import com.example.springbootbackend.DTO.*;
 import com.example.springbootbackend.model.OrderDetail;
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.PaymentDetail;
@@ -17,12 +15,29 @@ public class DTOConverter {
         dto.setId(orderDetail.getId());
         dto.setUserId(orderDetail.getUser().getId());
         dto.setTotal(orderDetail.getTotal());
-        dto.setPayment(convertToPaymentDetailDTO(orderDetail.getPayment()));
-        dto.setOrderItems(orderDetail.getOrderItems().stream()
-                .map(DTOConverter::convertToOrderItemDTO)
-                .collect(Collectors.toList()));
         dto.setCreatedAt(orderDetail.getCreatedAt());
         dto.setUpdatedAt(orderDetail.getUpdatedAt());
+
+        // Set new fields
+        dto.setCustomerName(orderDetail.getCustomerName());
+        dto.setPhoneNumber(orderDetail.getPhoneNumber());
+        dto.setCity(orderDetail.getCity());
+        dto.setAddress(orderDetail.getAddress());
+
+        // Convert and set OrderItems
+        if (orderDetail.getOrderItems() != null && !orderDetail.getOrderItems().isEmpty()) {
+            List<OrderItemDTO> orderItemDTOs = orderDetail.getOrderItems().stream()
+                    .map(DTOConverter::convertToOrderItemDTO)
+                    .collect(Collectors.toList());
+            dto.setOrderItems(orderItemDTOs);
+        }
+
+        // Convert and set PaymentDetail
+        if (orderDetail.getPayment() != null) {
+            PaymentDetailDTO paymentDTO = convertToPaymentDetailDTO(orderDetail.getPayment());
+            dto.setPayment(paymentDTO);
+        }
+
         return dto;
     }
 

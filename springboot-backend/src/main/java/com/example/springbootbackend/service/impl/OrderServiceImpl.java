@@ -2,7 +2,7 @@ package com.example.springbootbackend.service.impl;
 
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.OrderDetail;
-
+import org.springframework.transaction.annotation.Transactional;
 import com.example.springbootbackend.model.PaymentDetail;
 import com.example.springbootbackend.repository.OrderItemRepository;
 import com.example.springbootbackend.repository.OrderDetailRepository;
@@ -72,24 +72,52 @@ public class OrderServiceImpl implements OrderService {
     }
 
     public OrderDetail createOrderDetail(OrderDetail orderDetail) {
-        orderDetail.setCreatedAt(Instant.now());
-        orderDetail.setUpdatedAt(Instant.now());
+        Instant now = Instant.now();
 
+        // Set timestamps for OrderDetail
+        orderDetail.setCreatedAt(now);
+        orderDetail.setUpdatedAt(now);
+
+        // Get and set timestamps for PaymentDetail
         PaymentDetail paymentDetail = orderDetail.getPayment();
-        paymentDetail.setCreatedAt(Instant.now());
-        paymentDetail.setUpdatedAt(Instant.now());
+        paymentDetail.setCreatedAt(now);
+        paymentDetail.setUpdatedAt(now);
+        paymentDetail = paymentDetailRepository.save(paymentDetail); // Save PaymentDetail first
         orderDetail.setPayment(paymentDetail);
 
         // Set the order for each OrderItem and set timestamps
         List<OrderItem> orderItems = orderDetail.getOrderItems();
         for (OrderItem item : orderItems) {
             item.setOrder(orderDetail);
-            item.setCreatedAt(Instant.now());
-            item.setUpdatedAt(Instant.now());
+            item.setCreatedAt(now);
+            item.setUpdatedAt(now);
         }
 
+        // Save OrderDetail (cascading will save OrderItems)
         return orderDetailRepository.save(orderDetail);
     }
+
+//    public OrderDetail createOrderDetail(OrderDetail orderDetail) {
+//        orderDetail.setCreatedAt(Instant.now());
+//        orderDetail.setUpdatedAt(Instant.now());
+//
+//        PaymentDetail paymentDetail = orderDetail.getPayment();
+//        paymentDetail.setCreatedAt(Instant.now());
+//        paymentDetail.setUpdatedAt(Instant.now());
+//        orderDetail.setPayment(paymentDetail);
+//
+//        // Set the order for each OrderItem and set timestamps
+//        List<OrderItem> orderItems = orderDetail.getOrderItems();
+//        for (OrderItem item : orderItems) {
+//            item.setOrder(orderDetail);
+//            item.setCreatedAt(Instant.now());
+//            item.setUpdatedAt(Instant.now());
+//        }
+//
+//        return orderDetailRepository.save(orderDetail);
+//    }
+
+
 
     public OrderDetail updateOrderDetail(int orderId, OrderDetail orderDetail) {
         if (orderDetailRepository.existsById(orderId)) {
@@ -132,6 +160,19 @@ public class OrderServiceImpl implements OrderService {
             orderItemRepository.delete(orderItem);
             return true;
         }).orElse(false);
+    }
+
+//    Update status
+    @Transactional
+    public PaymentDetail updatePaymentStatus(int paymentId, String status) {
+        Optional<PaymentDetail> optionalPaymentDetail = Optional.ofNullable(paymentDetailRepository.findById(paymentId));
+        if (optionalPaymentDetail.isPresent()) {
+            PaymentDetail paymentDetail = optionalPaymentDetail.get();
+            paymentDetail.setStatus(status);
+            return paymentDetailRepository.save(paymentDetail);
+        } else {
+            throw new RuntimeException("PaymentDetail not found with id " + paymentId);
+        }
     }
 
 }

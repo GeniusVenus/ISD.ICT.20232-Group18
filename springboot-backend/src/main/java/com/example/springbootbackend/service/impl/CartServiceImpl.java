@@ -102,4 +102,15 @@ public class CartServiceImpl implements CartService {
     public Object payOrder(Integer session_id) {
         return null;
     }
+
+    @Override
+    public Object deleteAllProductFromCart(Integer session_id){
+        try {
+            List<CartItem> cartItems = cartRepository.findAll().stream().filter(cartItem -> cartItem.getSession().getId().equals(session_id)).collect(Collectors.toList());
+            cartRepository.deleteAll(cartItems);
+            return cartItems;
+        } catch (Exception e) {
+            return new Error("Can not delete all product from cart");
+        }
+    }
 }
