@@ -19,6 +19,7 @@ public interface OrderService {
         OrderDetail getOrderDetail(int orderId);
 
         PaymentDetail getPaymentDetail(int payment_id);
+        PaymentDetail updatePaymentStatus(int paymentId, String status);
 
         OrderDetail createOrderDetail(OrderDetail orderDetail);
 
@@ -33,6 +34,8 @@ public interface OrderService {
         Optional<OrderItem> updateOrderItem(Integer id, OrderItem orderItem);
 
         boolean deleteOrderItem(Integer id);
+
+
 
 
 

@@ -94,7 +94,7 @@ public class OrderController {
     }
 
 
-//    CRUD Order Detail
+    //    CRUD Order Detail
     @PostMapping
     public ResponseEntity<OrderDetailDTO> createOrderDetail(@RequestBody OrderDetail orderDetail) {
         OrderDetail createdOrderDetail = orderService.createOrderDetail(orderDetail);
@@ -136,6 +136,18 @@ public class OrderController {
             return ResponseEntity.notFound().build();
         }
     }
+
+//    Update status order
+    @PutMapping("/payments/{paymentId}/status")
+    public ResponseEntity<PaymentDetailDTO> updatePaymentStatus(
+            @PathVariable int paymentId,
+            @RequestParam String status) {
+
+        PaymentDetail updatedPaymentDetail = orderService.updatePaymentStatus(paymentId, status);
+        PaymentDetailDTO paymentDetailDTO = DTOConverter.convertToPaymentDetailDTO(updatedPaymentDetail);
+        return ResponseEntity.ok(paymentDetailDTO);
+    }
+
 
 
 }
