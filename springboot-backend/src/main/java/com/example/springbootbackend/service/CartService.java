@@ -9,8 +9,8 @@ public interface CartService {
     Object addProductToCart(Integer product_id, Integer quantity,Integer session_id);
     Object updateProductOnCart(Integer product_id, Integer quantity, Integer session_id);
     Object deleteProductFromCart(Integer product_id, Integer session_id);
-    Object payOrder(Integer session_id);
+//    Object payOrder(Integer session_id);
 
-    Object deleteAllProductFromCart(Integer session_id);
+    String deleteAllProductFromCart(String status,Integer session_id);
     Object bill(Integer session_id);
 }

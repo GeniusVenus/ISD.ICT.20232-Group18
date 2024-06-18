@@ -29,10 +29,10 @@ public class VNPayController extends HttpServlet {
     }
 
     @PostMapping("")
-    public String submidOrder(@RequestParam("amount") int orderTotal,
+    public String submitOrder(@RequestParam("amount") int orderTotal,
                               @RequestParam("orderInfo") String orderInfo,
                               HttpServletRequest request){
-        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort();
+        String baseUrl = request.getScheme() + "://" + request.getServerName() + ":" + "5173";
         String vnpayUrl = VNPayserviceImpl.createOrder(orderTotal, orderInfo, baseUrl);
         return vnpayUrl;
     }

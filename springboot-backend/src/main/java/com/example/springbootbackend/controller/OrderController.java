@@ -1,6 +1,8 @@
 package com.example.springbootbackend.controller;
 import com.example.springbootbackend.DTO.OrderDetailDTO;
 import com.example.springbootbackend.DTO.*;
+import com.example.springbootbackend.service.CartService;
+import com.example.springbootbackend.service.ProductService;
 import com.example.springbootbackend.utils.DTOConverter;
 import com.example.springbootbackend.model.OrderItem;
 import com.example.springbootbackend.model.OrderDetail;
@@ -20,17 +22,22 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.lang.Integer.parseInt;
+
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
 
     private final OrderService orderService;
-
+    private final ProductService productService;
+    private final CartService cartService;
     private int payment_id;
 
     @Autowired
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, ProductService productService, CartService cartService) {
         this.orderService = orderService;
+        this.productService = productService;
+        this.cartService = cartService;
     }
 
     @GetMapping("/{order_id}")
@@ -58,6 +65,10 @@ public class OrderController {
             response.put("user_id", orderDetail.getUser().getId());
             response.put("total", orderDetail.getTotal());
             response.put("payment",orderDetail.getPayment());
+            response.put("customerName",orderDetail.getCustomerName());
+            response.put("phoneNumber",orderDetail.getPhoneNumber());
+            response.put("city",orderDetail.getCity());
+            response.put("address",orderDetail.getAddress());
             response.put("order_items", matchingOrderItems);
             response.put("createdAt",orderDetail.getCreatedAt());
             response.put("updateAt",orderDetail.getUpdatedAt());
@@ -74,18 +85,15 @@ public class OrderController {
     @GetMapping("/user/{user_id}")
     public ResponseEntity<?> getAllOrderDetailsByUserId(@PathVariable("user_id") int userId) {
         List<OrderDetail> orderDetails = orderService.getAllOrderDetailsByUserId(userId);
-        if (orderDetails.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        }
         List<Map<String, Object>> response = orderDetails.stream()
                 .map(orderDetail -> {
                     Map<String, Object> orderMap = new HashMap<>();
                     orderMap.put("id", orderDetail.getId());
                     orderMap.put("user_id", orderDetail.getUser().getId());
                     orderMap.put("total",orderDetail.getTotal());
+                    orderMap.put("payment",orderDetail.getPayment());
                     orderMap.put("createAt",orderDetail.getCreatedAt());
                     orderMap.put("updateAt",orderDetail.getUpdatedAt());
-                    orderMap.put("payment",orderDetail.getPayment());
                     return orderMap;
                 })
                 .collect(Collectors.toList());
@@ -141,10 +149,13 @@ public class OrderController {
     @PutMapping("/payments/{paymentId}/status")
     public ResponseEntity<PaymentDetailDTO> updatePaymentStatus(
             @PathVariable int paymentId,
-            @RequestParam String status) {
+            @RequestParam String status,
+            @RequestParam String session_id) {
 
         PaymentDetail updatedPaymentDetail = orderService.updatePaymentStatus(paymentId, status);
         PaymentDetailDTO paymentDetailDTO = DTOConverter.convertToPaymentDetailDTO(updatedPaymentDetail);
+        productService.updateQuantitiesForOrder(paymentId);
+        cartService.deleteAllProductFromCart(status,parseInt(session_id));
         return ResponseEntity.ok(paymentDetailDTO);
     }
 

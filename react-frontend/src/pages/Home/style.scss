@@ -1,0 +1,53 @@
+@use "../../styles/global.scss" as util;
+
+.home-page {
+  &.container {
+    padding: 30px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: calc(100vh - 49px - 58.75px);
+    .filter {
+      @include util.center;
+    }
+    .card-item {
+      border-radius: 8px;
+      transition: transform 0.2s ease-in-out;
+      .product-image {
+        cursor: pointer;
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+        border-bottom-left-radius: 0px;
+        border-bottom-right-radius: 0px;
+      }
+      .card-body {
+        padding: 12px;
+        .card-title {
+          @include util.overflow_ver(1);
+        }
+        .card-text {
+          font-size: 12px;
+        }
+        .add-to-cart-container {
+          display: flex;
+          justify-content: flex-end;
+          z-index: 999;
+          cursor: pointer;
+
+          .add-to-cart-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #0d6efd;
+            padding: 10px;
+            border-radius: 50%;
+          }
+        }
+      }
+      &:hover {
+        transform: scale(1.03);
+      }
+    }
+  }
+}
