@@ -29,11 +29,12 @@ public class OrderDetail {
     @Column(name = "total", nullable = false, precision = 10)
     private BigDecimal total;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "payment_id", referencedColumnName = "id", nullable = false)
     private PaymentDetail payment;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<OrderItem> orderItems;
 
@@ -42,4 +43,20 @@ public class OrderDetail {
 
     @Column(name = "updated_at")
     private Instant updatedAt;
+
+
+    // New fields
+    @Column(name = "customer_name")
+    private String customerName;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
+
+    @Column(name = "city")
+    private String city;
+
+    @Column(name = "address")
+    private String address;
+
 }
+

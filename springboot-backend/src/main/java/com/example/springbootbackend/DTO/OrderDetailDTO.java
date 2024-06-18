@@ -12,6 +12,10 @@ public class OrderDetailDTO {
     private List<OrderItemDTO> orderItems;
     private Instant createdAt;
     private Instant updatedAt;
+    private String customerName;
+    private String phoneNumber;
+    private String city;
+    private String address;
 
     // Getters and Setters
     public Integer getId() {
@@ -68,5 +72,38 @@ public class OrderDetailDTO {
 
     public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    // Getters and Setters for new fields
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

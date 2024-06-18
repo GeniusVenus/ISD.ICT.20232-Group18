@@ -134,5 +134,17 @@ public class OrderController {
         }
     }
 
+//    Update status order
+    @PutMapping("/payments/{paymentId}/status")
+    public ResponseEntity<PaymentDetailDTO> updatePaymentStatus(
+            @PathVariable int paymentId,
+            @RequestParam String status) {
+
+        PaymentDetail updatedPaymentDetail = orderService.updatePaymentStatus(paymentId, status);
+        PaymentDetailDTO paymentDetailDTO = DTOConverter.convertToPaymentDetailDTO(updatedPaymentDetail);
+        return ResponseEntity.ok(paymentDetailDTO);
+    }
+
+
 
 }
