@@ -56,10 +56,10 @@ public class ProductController {
                 response.put("category", "cd");
                 response.put("albums", cd.getAlbums());
                 response.put("artist", cd.getArtist());
-                response.put("recordLabel", cd.getRecordLabel());
-                response.put("trackList", cd.getTrackList());
+                response.put("record_label", cd.getRecordLabel());
+                response.put("track_list", cd.getTrackList());
                 response.put("genre", cd.getGenre());
-                response.put("releaseDate", cd.getReleaseDate());
+                response.put("release_date", cd.getReleaseDate());
                 response.put("createdAt", cd.getCreatedAt());
                 response.put("updatedAt", cd.getUpdatedAt());
                 return ResponseEntity.ok(response);
@@ -155,11 +155,14 @@ public class ProductController {
     }
     @PostMapping("/add/product")
     public ResponseEntity<String> createProduct(@RequestBody ProductRequestDTO requestDTO) {
-        String categoryName = requestDTO.getCategoryName();
+        String categoryName = requestDTO.getCategoryName().toLowerCase();
         Category category = categoryRepository.findByName(categoryName);
+        System.out.println(categoryName);
         if (category == null) {
-            return ResponseEntity.badRequest().body("Invalid category name");
+            return ResponseEntity.badRequest().body("Invalid category name.");
         }
+
+
 
         // Create and set up the Product entity
         Product product = new Product();
@@ -169,12 +172,12 @@ public class ProductController {
         product.setPrice(requestDTO.getPrice());
         product.setCategory(category); // Set the found Category entity
         product.setQuantity(requestDTO.getQuantity());
-        product.setCreatedAt(requestDTO.getCreatedAt());
-        product.setUpdatedAt(requestDTO.getUpdatedAt());
+        product.setCreatedAt(Instant.now());
+        product.setUpdatedAt(Instant.now());
         product.setWeight(requestDTO.getWeight());
         productRepository.save(product);
 
-        if (category.getName().equalsIgnoreCase("Book")) {
+        if (category.getName().equalsIgnoreCase("book")) {
             Book book = new Book();
             book.setAuthor(requestDTO.getAuthor());
             book.setPublisher(requestDTO.getPublisher());
@@ -183,16 +186,16 @@ public class ProductController {
             book.setCoverType(requestDTO.getCoverType());
             book.setNumberOfPage(requestDTO.getNumberOfPage());
             book.setPublicationDate(requestDTO.getPublicationDate());
-            book.setCreatedAt(requestDTO.getCreatedAt());
-            book.setUpdatedAt(requestDTO.getUpdatedAt());
+            book.setCreatedAt(Instant.now());
+            book.setUpdatedAt(Instant.now());
             book.setProduct(product);
 
             bookRepository.save(book);
         }
-        else if(category.getName().equalsIgnoreCase("Cd")){
+        else if(category.getName().equalsIgnoreCase("cd")){
             Cd cd = new Cd();
-            cd.setCreatedAt(requestDTO.getCreatedAt());
-            cd.setUpdatedAt(requestDTO.getUpdatedAt());
+            cd.setCreatedAt(Instant.now());
+            cd.setUpdatedAt(Instant.now());
             cd.setGenre(requestDTO.getGenre());
             cd.setArtist(requestDTO.getArtist());
             cd.setAlbums(requestDTO.getAlbums());
@@ -203,10 +206,10 @@ public class ProductController {
 
             cdRepository.save(cd);
         }
-        else if(category.getName().equalsIgnoreCase("Dvd")){
+        else if(category.getName().equalsIgnoreCase("dvd")){
             Dvd dvd = new Dvd();
-            dvd.setCreatedAt(requestDTO.getCreatedAt());
-            dvd.setUpdatedAt(requestDTO.getUpdatedAt());
+            dvd.setCreatedAt(Instant.now());
+            dvd.setUpdatedAt(Instant.now());
             dvd.setGenre(requestDTO.getGenre());
             dvd.setLanguage(requestDTO.getLanguage());
             dvd.setStudio(requestDTO.getStudio());
@@ -234,10 +237,9 @@ public class ProductController {
         product.setName(requestDTO.getName()); // Set the name property
         product.setPrice(requestDTO.getPrice());
         product.setQuantity(requestDTO.getQuantity());
-        product.setUpdatedAt(requestDTO.getUpdatedAt());
+        product.setUpdatedAt(Instant.now());
         product.setWeight(requestDTO.getWeight());
-
-        if (product.getCategory().getName().equalsIgnoreCase("Book")) {
+        if (product.getCategory().getName().equals("book")) {
             Optional<Book> optionalBook = bookRepository.findByProduct(product);
 
             if (optionalBook.isEmpty()) {
@@ -252,10 +254,10 @@ public class ProductController {
             book.setCoverType(requestDTO.getCoverType());
             book.setNumberOfPage(requestDTO.getNumberOfPage());
             book.setPublicationDate(requestDTO.getPublicationDate());
-            book.setUpdatedAt(requestDTO.getUpdatedAt());
+            book.setUpdatedAt(Instant.now());
             book.setProduct(product);
         }
-        else if (product.getCategory().getName().equalsIgnoreCase("Cd")){
+        else if (product.getCategory().getName().equals("cd")){
             Optional<Cd> optionalCd = cdRepository.findByProduct(product);
 
             if (optionalCd.isEmpty()) {
@@ -263,7 +265,7 @@ public class ProductController {
             }
 
             Cd cd = optionalCd.get();
-            cd.setUpdatedAt(requestDTO.getUpdatedAt());
+            cd.setUpdatedAt(Instant.now());
             cd.setGenre(requestDTO.getGenre());
             cd.setArtist(requestDTO.getArtist());
             cd.setAlbums(requestDTO.getAlbums());
@@ -274,7 +276,7 @@ public class ProductController {
 
         }
 
-        else if (product.getCategory().getName().equalsIgnoreCase("Dvd")){
+        else if (product.getCategory().getName().equals("dvd")){
             Optional<Dvd> optionalDvd = dvdRepository.findByProduct(product);
 
             if (optionalDvd.isEmpty()) {
@@ -282,7 +284,7 @@ public class ProductController {
             }
 
             Dvd dvd = optionalDvd.get();
-            dvd.setUpdatedAt(requestDTO.getUpdatedAt());
+            dvd.setUpdatedAt(Instant.now());
             dvd.setGenre(requestDTO.getGenre());
             dvd.setLanguage(requestDTO.getLanguage());
             dvd.setStudio(requestDTO.getStudio());
@@ -308,7 +310,7 @@ public class ProductController {
         String categoryName = product.getCategory().getName();
 
         switch (categoryName) {
-            case "Cd":
+            case "cd":
                 Optional<Cd> optionalCd = cdRepository.findByProduct(product);
                 if (optionalCd.isEmpty()) {
                     return ResponseEntity.notFound().build();
@@ -316,7 +318,7 @@ public class ProductController {
                 Cd cd = optionalCd.get();
                 cdRepository.deleteById(cd.getId());
                 break;
-            case "Dvd":
+            case "dvd":
                 Optional<Dvd> optionalDvd = dvdRepository.findByProduct(product);
                 if (optionalDvd.isEmpty()) {
                     return ResponseEntity.notFound().build();
@@ -324,7 +326,7 @@ public class ProductController {
                 Dvd dvd = optionalDvd.get();
                 dvdRepository.deleteById(dvd.getId());
                 break;
-            case "Book":
+            case "book":
                 Optional<Book> optionalBook = bookRepository.findByProduct(product);
                 if (optionalBook.isEmpty()) {
                     return ResponseEntity.notFound().build();

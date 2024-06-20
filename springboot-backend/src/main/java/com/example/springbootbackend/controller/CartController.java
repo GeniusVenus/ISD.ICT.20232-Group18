@@ -115,18 +115,18 @@ public class CartController {
     }
 
 
-    @DeleteMapping("/product")
-    public ResponseEntity<?> deleteAllProductFromCart(@RequestParam Integer session_id){
-        try {
-            var newProduct = cartService.deleteAllProductFromCart(session_id);
-            if (newProduct == null) {
-                return new ResponseEntity<>("Error to delete cart", HttpStatus.INTERNAL_SERVER_ERROR);
-            }
-            return new ResponseEntity<>("Products deleted from cart", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @DeleteMapping("/product")
+//    public ResponseEntity<?> deleteAllProductFromCart(@RequestParam Integer session_id){
+//        try {
+//            var newProduct = cartService.deleteAllProductFromCart(session_id);
+//            if (newProduct == null) {
+//                return new ResponseEntity<>("Error to delete cart", HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//            return new ResponseEntity<>("Products deleted from cart", HttpStatus.OK);
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
 
 }

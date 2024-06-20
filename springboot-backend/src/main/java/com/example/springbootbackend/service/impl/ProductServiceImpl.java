@@ -13,6 +13,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
 
@@ -33,6 +35,8 @@ public class ProductServiceImpl implements ProductService {
         this.dvdRepository = dvdRepository;
     }
 
+    @Override
+    public void updateQuantity(int productId, int quantity) {
 
     @Override
     public void updateQuantity(int productId, int quantity) {
@@ -243,5 +247,19 @@ public class ProductServiceImpl implements ProductService {
         return categoryRepository.findByName(categoryName);
     }
 
+        if (product.getQuantity() < quantity) {
+            throw new RuntimeException("Not enough quantity available for product ID: " + productId);
+        }
+        product.setQuantity(product.getQuantity() - quantity);
+        productRepository.save(product);
+    }
+    @Override
+    public void updateQuantitiesForOrder(int orderId) {
+        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+
+        for (OrderItem item : orderItems) {
+            updateQuantity(item.getProduct().getId(), item.getQuantity());
+        }
+    }
 }
 
