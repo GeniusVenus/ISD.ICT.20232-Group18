@@ -26,7 +26,7 @@ public class ProductServiceImpl implements ProductService {
     private final CdRepository cdRepository;
     private final DvdRepository dvdRepository;
 
-    public ProductServiceImpl(ProductRepository productRepository,OrderItemRepository orderItemRepository, CategoryRepository categoryRepository, BookRepository bookRepository, CdRepository cdRepository, DvdRepository dvdRepository) {
+    public ProductServiceImpl(ProductRepository productRepository, OrderItemRepository orderItemRepository, CategoryRepository categoryRepository, BookRepository bookRepository, CdRepository cdRepository, DvdRepository dvdRepository) {
         this.productRepository = productRepository;
         this.categoryRepository = categoryRepository;
         this.bookRepository = bookRepository;
@@ -35,8 +35,6 @@ public class ProductServiceImpl implements ProductService {
         this.dvdRepository = dvdRepository;
     }
 
-    @Override
-    public void updateQuantity(int productId, int quantity) {
 
     @Override
     public void updateQuantity(int productId, int quantity) {
@@ -51,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
         product.setQuantity(product.getQuantity() - quantity);
         productRepository.save(product);
     }
+
     @Override
     public void updateQuantitiesForOrder(int orderId) {
         List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
@@ -90,8 +89,7 @@ public class ProductServiceImpl implements ProductService {
             book.setProduct(product);
 
             bookRepository.save(book);
-        }
-        else if(category.getName().equalsIgnoreCase("cd")){
+        } else if (category.getName().equalsIgnoreCase("cd")) {
             Cd cd = new Cd();
             cd.setCreatedAt(Instant.now());
             cd.setUpdatedAt(Instant.now());
@@ -104,8 +102,7 @@ public class ProductServiceImpl implements ProductService {
             cd.setProduct(product);
 
             cdRepository.save(cd);
-        }
-        else if(category.getName().equalsIgnoreCase("dvd")){
+        } else if (category.getName().equalsIgnoreCase("dvd")) {
             Dvd dvd = new Dvd();
             dvd.setCreatedAt(Instant.now());
             dvd.setUpdatedAt(Instant.now());
@@ -147,8 +144,7 @@ public class ProductServiceImpl implements ProductService {
             book.setPublicationDate(requestDTO.getPublicationDate());
             book.setUpdatedAt(Instant.now());
             book.setProduct(product);
-        }
-        else if (product.getCategory().getName().equals("cd")){
+        } else if (product.getCategory().getName().equals("cd")) {
             Optional<Cd> optionalCd = cdRepository.findByProduct(product);
 
 
@@ -162,9 +158,7 @@ public class ProductServiceImpl implements ProductService {
             cd.setReleaseDate(requestDTO.getReleaseDate());
             cd.setProduct(product);
 
-        }
-
-        else if (product.getCategory().getName().equals("dvd")){
+        } else if (product.getCategory().getName().equals("dvd")) {
             Optional<Dvd> optionalDvd = dvdRepository.findByProduct(product);
 
             Dvd dvd = optionalDvd.get();
@@ -246,20 +240,4 @@ public class ProductServiceImpl implements ProductService {
     public Category getCategoryByName(String categoryName) {
         return categoryRepository.findByName(categoryName);
     }
-
-        if (product.getQuantity() < quantity) {
-            throw new RuntimeException("Not enough quantity available for product ID: " + productId);
-        }
-        product.setQuantity(product.getQuantity() - quantity);
-        productRepository.save(product);
-    }
-    @Override
-    public void updateQuantitiesForOrder(int orderId) {
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
-
-        for (OrderItem item : orderItems) {
-            updateQuantity(item.getProduct().getId(), item.getQuantity());
-        }
-    }
 }
-
